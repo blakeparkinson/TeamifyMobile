@@ -1,6 +1,13 @@
 <ion-view view-title="Dashboard">
   <ion-content class="padding">
-    <h2>Welcome to Ionic</h2>
+    <h2>Welcome to Ionics</h2>
+      <button class="button button-primary button-block " ng-click="checkForUpdates()">
+          Check for updates
+      </button>
+
+      <button class="button button-stable button-block button-pulse" ng-if="hasUpdate" ng-click="doUpdate()">
+          Download update
+      </button>
     <p>
     This is the Ionic starter for tabs-based apps. For other starters and ready-made templates, check out the <a href="http://market.ionic.io/starters" target="_blank">Ionic Market</a>.
     </p>
