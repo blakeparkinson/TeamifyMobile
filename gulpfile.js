@@ -5,10 +5,17 @@ var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
-var sh = require('shelljs');
+var shell = require('shelljs');
+var preprocess = require('gulp-preprocess');
+var argv = require('yargs').argv;
+
 
 var paths = {
-  sass: ['./scss/**/*.scss']
+  sass: ['./scss/**/*.scss'],
+    preprocessing: {
+        config: './preprocess/config.js',
+        configxml: './preprocess/configxml.js'
+    }
 };
 
 gulp.task('default', ['sass']);
@@ -25,6 +32,78 @@ gulp.task('sass', function(done) {
     .pipe(gulp.dest('./www/css/'))
     .on('end', done);
 });
+
+
+function validateEnvFlag(flag){
+    if(!flag || (!(flag == 'local' || flag == 'dev' || flag == 'staging' || flag == 'production'))){
+        console.log('invalid env flag (local | dev | staging | production), aborting!');
+        return false;
+    }
+    return true;
+}
+/**
+ * Preprocess files and run on specified device
+ * @param {enum} env (dev | staging | production)
+ */
+gulp.task('serve', function () {
+    if(!validateEnvFlag(argv.env)){
+        return;
+    }
+    config(argv.env);
+
+    return gulp.src('*.js', {read: false})
+        .pipe(shell([
+            'ionic serve'
+        ], {
+            templateData: {
+                f: function (s) {
+                    return s.replace(/$/, '.bak')
+                }
+            }
+        }))
+
+});
+
+
+
+gulp.task('config', function () {
+    if(!validateEnvFlag(argv.env)){
+        return;
+    }
+
+    //preprocess cordova xml file (for serving seperate app ids)
+    console.log('creating cordova xml file');
+    gulp.src(paths.preprocessing.configxml)
+        .pipe(preprocess({context: { ENV: argv.env, DEBUG: true}}))
+        .pipe(rename('config.xml'))
+        .pipe(gulp.dest('./'));
+
+});
+
+function config(env) {
+    console.log('setting config variables');
+
+    //preprocess cordova xml file (for serving seperate app ids)
+    console.log('creating cordova xml file');
+    gulp.src(paths.preprocessing.configxml)
+        .pipe(preprocess({context: { ENV: argv.env, DEBUG: true}}))
+        .pipe(rename('config.xml'))
+        .pipe(gulp.dest('./'));
+
+    //preprocess angular config module
+    console.log('setting angular config variables');
+    /*
+    gulp.src(paths.preprocessing.config).pipe(
+        preprocess(
+            {
+                context: {
+                    ENV: env,
+                    DEBUG: true
+                }
+            })).pipe(gulp.dest('./www/js/app/core/'));
+   */
+}
+
 
 gulp.task('watch', function() {
   gulp.watch(paths.sass, ['sass']);
