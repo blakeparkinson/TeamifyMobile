@@ -5,10 +5,9 @@ var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
-var shell = require('shelljs');
 var preprocess = require('gulp-preprocess');
 var argv = require('yargs').argv;
-
+var exec = require('gulp-exec');
 
 var paths = {
   sass: ['./scss/**/*.scss'],
@@ -20,6 +19,9 @@ var paths = {
 
 gulp.task('default', ['sass']);
 
+/**
+ * Run sass tasks
+ */
 gulp.task('sass', function(done) {
   gulp.src('./scss/ionic.app.scss')
     .pipe(sass())
@@ -33,14 +35,13 @@ gulp.task('sass', function(done) {
     .on('end', done);
 });
 
+/**
+ * Watch Sass files and compile
+ */
+gulp.task('watch', function() {
+    gulp.watch(paths.sass, ['sass']);
+});
 
-function validateEnvFlag(flag){
-    if(!flag || (!(flag == 'local' || flag == 'dev' || flag == 'staging' || flag == 'production'))){
-        console.log('invalid env flag (local | dev | staging | production), aborting!');
-        return false;
-    }
-    return true;
-}
 /**
  * Preprocess files and run on specified device
  * @param {enum} env (dev | staging | production)
@@ -52,33 +53,32 @@ gulp.task('serve', function () {
     config(argv.env);
 
     return gulp.src('*.js', {read: false})
-        .pipe(shell([
-            'ionic serve'
-        ], {
-            templateData: {
-                f: function (s) {
-                    return s.replace(/$/, '.bak')
-                }
-            }
-        }))
+        .pipe(exec('ionic serve'))
 
 });
 
 
-
+/**
+ * Preprocess files for the specified environment
+ * @param {enum} env (dev | staging | production)
+ */
 gulp.task('config', function () {
     if(!validateEnvFlag(argv.env)){
         return;
     }
 
     //preprocess cordova xml file (for serving seperate app ids)
-    console.log('creating cordova xml file');
-    gulp.src(paths.preprocessing.configxml)
-        .pipe(preprocess({context: { ENV: argv.env, DEBUG: true}}))
-        .pipe(rename('config.xml'))
-        .pipe(gulp.dest('./'));
-
+    config(argv.env);
 });
+
+
+function validateEnvFlag(flag){
+    if(!flag || (!(flag == 'local' || flag == 'dev' || flag == 'staging' || flag == 'production'))){
+        console.log('invalid env flag (local | dev | staging | production), aborting!');
+        return false;
+    }
+    return true;
+}
 
 function config(env) {
     console.log('setting config variables');
@@ -104,10 +104,6 @@ function config(env) {
    */
 }
 
-
-gulp.task('watch', function() {
-  gulp.watch(paths.sass, ['sass']);
-});
 
 gulp.task('install', ['git-check'], function() {
   return bower.commands.install()
