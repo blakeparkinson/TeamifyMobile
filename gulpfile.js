@@ -70,19 +70,19 @@ gulp.task('deploy', function () {
 
     config(env);
 
-console.log('Pushing to branch:' + git.branch());
+    var branch = git.branch();
 
+    console.log('Pushing to branch:' + git.branch());
     return gulp.src('*.js', {read: false})
         .pipe(exec('git push'));
 
-    if(git.branch() == 'local' || git.branch() == 'staging' || git.branch() == 'production'){
-        console.log('deployd');
+    if(git.branch() == 'dev' || git.branch() == 'staging' || git.branch() == 'master'){
+        console.log('Deploying to channel: branch');
+         return gulp.src('*.js', {read: false})
+         .pipe(exec('ionic upload --deploy=' + branch))
     }
     return;
-    /*
-    return gulp.src('*.js', {read: false})
-        .pipe(exec('ionic serve'))
-*/
+
 });
 
 /**
