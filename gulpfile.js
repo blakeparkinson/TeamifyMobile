@@ -43,55 +43,111 @@ gulp.task('watch', function() {
 });
 
 /**
- * Preprocess files and run on specified device
+ * Preprocess files and serve in browser (default env is local)
  * @param {enum} env (dev | staging | production)
  */
 gulp.task('serve', function () {
-    if(!validateEnvFlag(argv.env)){
-        return;
-    }
-    config(argv.env);
+
+    var env = getEnvironment(argv);
+
+    config(env);
 
     return gulp.src('*.js', {read: false})
         .pipe(exec('ionic serve'))
 
 });
 
-
 /**
- * Preprocess files for the specified environment
+ * Preprocess files and emulate (default env is local)
  * @param {enum} env (dev | staging | production)
  */
-gulp.task('config', function () {
-    if(!validateEnvFlag(argv.env)){
-        return;
+gulp.task('emulate', function () {
+
+    var env = getEnvironment(argv);
+
+    var device = 'ios';
+
+    if(argv.android) {
+    device = 'android';
     }
 
-    //preprocess cordova xml file (for serving seperate app ids)
-    config(argv.env);
+    config(env);
+
+    return gulp.src('*.js', {read: false})
+        .pipe(exec('ionic emulate ' + device))
+
 });
 
 
-function validateEnvFlag(flag){
-    if(!flag || (!(flag == 'local' || flag == 'dev' || flag == 'staging' || flag == 'production'))){
-        console.log('invalid env flag (local | dev | staging | production), aborting!');
-        return false;
+/**
+ * Preprocess files and run on specified device
+ * @param {enum} env (dev | staging | production)
+ */
+gulp.task('run', function () {
+    var env = getEnvironment(argv);
+
+    if (env == 'local') {
+        console.log('Cannot run in local env, specify with flag (dev | staging | production)');
+        return;
     }
-    return true;
+
+    var device = getDevice(argv);
+
+    config(env);
+
+    if (device = 'android') {
+        return gulp.src('*.js', {read: false}).pipe(exec('ionic run ' + device));
+    }
+
+    else{
+        console.log('ios');
+        return gulp.src('*.js', {read: false})
+            .pipe(exec('ionic build ios'))
+    }
+
+});
+
+
+
+function getEnvironment(argv){
+    var env;
+    if(argv.dev){
+        env = 'dev';
+    }
+    else if(argv.staging){
+        env = 'staging';
+    }
+    else if(argv.production){
+        env = 'production';
+    }
+    else{
+        env = 'local'
+    }
+
+    return env;
+}
+
+function getDevice(argv){
+    var device = 'ios';
+
+    if(argv.android) {
+        device = 'android';
+    }
+    return device;
 }
 
 function config(env) {
-    console.log('setting config variables');
 
+    console.log(env);
     //preprocess cordova xml file (for serving seperate app ids)
-    console.log('creating cordova xml file');
+    console.log('creating cordova xml file for environment: ' + env);
     gulp.src(paths.preprocessing.configxml)
-        .pipe(preprocess({context: { ENV: argv.env, DEBUG: true}}))
+        .pipe(preprocess({context: { ENV: env, DEBUG: true}}))
         .pipe(rename('config.xml'))
         .pipe(gulp.dest('./'));
 
     //preprocess angular config module
-    console.log('setting angular config variables');
+    console.log('setting angular config variables for environment: ' + env);
     /*
     gulp.src(paths.preprocessing.config).pipe(
         preprocess(

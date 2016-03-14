@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+// @if ENV == 'local'
+    <widget id="com.ionicframework.mobile70705l" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+        <name>TeamifyLocal</name>
+        //@endif
   // @if ENV == 'dev'
 <widget id="com.ionicframework.mobile70705d" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
 <name>TeamifyDev</name>
