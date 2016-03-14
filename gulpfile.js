@@ -8,6 +8,7 @@ var rename = require('gulp-rename');
 var preprocess = require('gulp-preprocess');
 var argv = require('yargs').argv;
 var exec = require('gulp-exec');
+var git = require('git-rev')
 
 var paths = {
   sass: ['./scss/**/*.scss'],
@@ -160,6 +161,13 @@ function config(env) {
    */
 }
 
+gulp.task('git-branch', function() {
+    git.branch(
+        function (str) {
+            console.log('branch', str);
+            // => master
+        })
+});
 
 gulp.task('install', ['git-check'], function() {
   return bower.commands.install()
