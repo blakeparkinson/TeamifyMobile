@@ -71,7 +71,7 @@ gulp.task('deploy', function () {
     config(env);
 
     console.log('Pushing to branch:' + branch);
-    return gulp.src('*.js', {read: false})
+    gulp.src('*.js', {read: false})
         .pipe(exec('git push'));
 
     if(branch == 'dev' || branch == 'staging' || branch == 'master'){
