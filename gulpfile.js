@@ -64,17 +64,21 @@ gulp.task('serve', function () {
 /**
  * Push to upstream branch and automatically deploy if on environment branch
  */
-gulp.task('push', function () {
+gulp.task('deploy', function () {
 
     var env = getEnvironment(argv);
 
     config(env);
 
-    console.log(env);
+console.log('Pushing to branch:' + git.branch());
 
     return gulp.src('*.js', {read: false})
-        .pipe(exec(''));
+        .pipe(exec('git push'));
 
+    if(git.branch() == 'local' || git.branch() == 'staging' || git.branch() == 'production'){
+        console.log('deployd');
+    }
+    return;
     /*
     return gulp.src('*.js', {read: false})
         .pipe(exec('ionic serve'))
