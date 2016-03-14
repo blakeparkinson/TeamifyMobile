@@ -66,17 +66,15 @@ gulp.task('serve', function () {
  */
 gulp.task('deploy', function () {
 
-    var env = getEnvironment(argv);
-
+    var branch = git.branch();
+    var env = getEnvironmentForBranch(branch);
     config(env);
 
-    var branch = git.branch();
-
-    console.log('Pushing to branch:' + git.branch());
+    console.log('Pushing to branch:' + branch);
     return gulp.src('*.js', {read: false})
         .pipe(exec('git push'));
 
-    if(git.branch() == 'dev' || git.branch() == 'staging' || git.branch() == 'master'){
+    if(branch == 'dev' || branch == 'staging' || branch == 'master'){
         console.log('Deploying to channel: branch');
          return gulp.src('*.js', {read: false})
          .pipe(exec('ionic upload --deploy=' + branch))
@@ -113,6 +111,18 @@ gulp.task('emulate', function () {
 
 function getEnvironmentForBranch(branch){
 
+
+    if(branch == 'dev'){
+            return 'dev';
+    }
+    if(branch == 'staging'){
+            return 'staging';
+    }
+    if(branch == 'master'){
+            return 'master';
+    }
+
+    return 'local';
 }
 
 function branchMatchesEnvironment(branch, env){
