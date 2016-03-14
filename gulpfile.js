@@ -8,7 +8,7 @@ var rename = require('gulp-rename');
 var preprocess = require('gulp-preprocess');
 var argv = require('yargs').argv;
 var exec = require('gulp-exec');
-var git = require('git-rev')
+var git = require('git-rev-sync');
 
 var paths = {
   sass: ['./scss/**/*.scss'],
@@ -17,6 +17,7 @@ var paths = {
         configxml: './preprocess/configxml.js'
     }
 };
+
 
 gulp.task('default', ['sass']);
 
@@ -43,6 +44,7 @@ gulp.task('watch', function() {
     gulp.watch(paths.sass, ['sass']);
 });
 
+
 /**
  * Preprocess files and serve in browser (default env is local)
  * @param {enum} env (dev | staging | production)
@@ -58,6 +60,27 @@ gulp.task('serve', function () {
 
 });
 
+
+/**
+ * Push to upstream branch and automatically deploy if on environment branch
+ */
+gulp.task('push', function () {
+
+    var env = getEnvironment(argv);
+
+    config(env);
+
+    console.log(env);
+
+    return gulp.src('*.js', {read: false})
+        .pipe(exec(''));
+
+    /*
+    return gulp.src('*.js', {read: false})
+        .pipe(exec('ionic serve'))
+*/
+});
+
 /**
  * Preprocess files and emulate (default env is local)
  * @param {enum} env (dev | staging | production)
@@ -65,8 +88,13 @@ gulp.task('serve', function () {
 gulp.task('emulate', function () {
 
     var env = getEnvironment(argv);
-
     var device = 'ios';
+    var branch = git.branch();
+
+    if(!branchMatchesEnvironment(branch, env)){
+        console.log(gutil.colors.red('Branch does not match environment, aborting!'));
+        return;
+    }
 
     if(argv.android) {
     device = 'android';
@@ -79,7 +107,33 @@ gulp.task('emulate', function () {
 
 });
 
+function getEnvironmentForBranch(branch){
 
+}
+
+function branchMatchesEnvironment(branch, env){
+if(env == 'local'){
+   if(branch == 'dev' || branch == 'staging' || branch == 'master'){
+       return false;
+   }
+}
+    if(env == 'dev'){
+        if(branch !== 'dev'){
+            return false;
+        }
+    }
+    if(env == 'staging'){
+        if(branch !== 'staging'){
+            return false;
+        }
+    }
+    if(env == 'production'){
+        if(branch !== 'production'){
+            return false;
+        }
+    }
+return true;
+}
 /**
  * Preprocess files and run on specified device
  * @param {enum} env (dev | staging | production)
@@ -161,13 +215,7 @@ function config(env) {
    */
 }
 
-gulp.task('git-branch', function() {
-    git.branch(
-        function (str) {
-            console.log('branch', str);
-            // => master
-        })
-});
+
 
 gulp.task('install', ['git-check'], function() {
   return bower.commands.install()
