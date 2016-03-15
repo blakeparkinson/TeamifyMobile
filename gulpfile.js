@@ -5,11 +5,11 @@ var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
+var plug = require('gulp-load-plugins')();
 var preprocess = require('gulp-preprocess');
 var argv = require('yargs').argv;
 //var exec = require('gulp-exec');
 var git = require('git-rev-sync');
-
 var exec = require('child_process').exec;
 
 var paths = {
@@ -17,10 +17,12 @@ var paths = {
     preprocessing: {
         config: './preprocess/config.js',
         configxml: './preprocess/configxml.js'
-    }
+    },
+    js: ['./www/js/**/*js']
 };
 
 gulp.task('default', ['sass']);
+
 
 /**
  * Run sass tasks
@@ -43,7 +45,9 @@ gulp.task('sass', function(done) {
  */
 gulp.task('watch', function() {
     gulp.watch(paths.sass, ['sass']);
+    gulp.watch(paths.js, ['js']);
 });
+
 
 
 /**
@@ -64,6 +68,14 @@ gulp.task('serve', function () {
         });
 
 });
+
+gulp.task('js', function(){
+    return gulp.src(paths.js)
+        .pipe(plug.concat('main.js'))
+        .pipe(gulp.dest('./www/'));
+});
+
+
 
 
 /**
@@ -195,7 +207,8 @@ function config(env) {
 
     //preprocess angular config module
     console.log('setting angular config variables for environment: ' + env);
-    /*
+
+
     gulp.src(paths.preprocessing.config).pipe(
         preprocess(
             {
@@ -203,8 +216,8 @@ function config(env) {
                     ENV: env,
                     DEBUG: true
                 }
-            })).pipe(gulp.dest('./www/js/app/core/'));
-   */
+            })).pipe(gulp.dest('./www/js/core/'));
+
 }
 
 
