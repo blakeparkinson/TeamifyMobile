@@ -7,8 +7,10 @@ var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var preprocess = require('gulp-preprocess');
 var argv = require('yargs').argv;
-var exec = require('gulp-exec');
+//var exec = require('gulp-exec');
 var git = require('git-rev-sync');
+
+var exec = require('child_process').exec;
 
 var paths = {
   sass: ['./scss/**/*.scss'],
@@ -17,7 +19,6 @@ var paths = {
         configxml: './preprocess/configxml.js'
     }
 };
-
 
 gulp.task('default', ['sass']);
 
@@ -51,12 +52,16 @@ gulp.task('watch', function() {
  */
 gulp.task('serve', function () {
 
-    var env = getEnvironment(argv);
+    var branch = git.branch();
+    var env = getEnvironmentForBranch(branch);
 
     config(env);
 
-    return gulp.src('*.js', {read: false})
-        .pipe(exec('ionic serve'))
+    return exec('ionic serve', function (err, stdout, stderr) {
+            console.log(stdout);
+            console.log(stderr);
+            cb(err)
+        });
 
 });
 
@@ -65,23 +70,30 @@ gulp.task('serve', function () {
  * Push to upstream branch and automatically deploy if on environment branch
  */
 gulp.task('deploy', function () {
-
     var branch = git.branch();
     var env = getEnvironmentForBranch(branch);
     config(env);
 
     console.log('Pushing to branch:' + branch);
-    gulp.src('*.js', {read: false})
-        .pipe(exec('git push'));
+
+    exec('git push', function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err)
+    });
 
     if(branch == 'dev' || branch == 'staging' || branch == 'master'){
         console.log('Deploying to channel: branch');
-         return gulp.src('*.js', {read: false})
-         .pipe(exec('ionic upload --deploy=' + branch))
+        exec('ionic upload --deploy=' + branch, function (err, stdout, stderr) {
+            console.log(stdout);
+            console.log(stderr);
+            cb(err);
+        });
     }
     return;
 
 });
+
 
 /**
  * Preprocess files and emulate (default env is local)
@@ -89,28 +101,27 @@ gulp.task('deploy', function () {
  */
 gulp.task('emulate', function () {
 
-    var env = getEnvironment(argv);
-    var device = 'ios';
     var branch = git.branch();
+    var env = getEnvironmentForBranch(branch);
 
-    if(!branchMatchesEnvironment(branch, env)){
-        console.log(gutil.colors.red('Branch does not match environment, aborting!'));
-        return;
-    }
+    var device = 'ios';
 
     if(argv.android) {
     device = 'android';
     }
-
     config(env);
 
-    return gulp.src('*.js', {read: false})
-        .pipe(exec('ionic emulate ' + device))
+    return exec('ionic emulate ' + device, function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err)
+    });
+
+
 
 });
 
 function getEnvironmentForBranch(branch){
-
 
     if(branch == 'dev'){
             return 'dev';
@@ -125,35 +136,13 @@ function getEnvironmentForBranch(branch){
     return 'local';
 }
 
-function branchMatchesEnvironment(branch, env){
-if(env == 'local'){
-   if(branch == 'dev' || branch == 'staging' || branch == 'master'){
-       return false;
-   }
-}
-    if(env == 'dev'){
-        if(branch !== 'dev'){
-            return false;
-        }
-    }
-    if(env == 'staging'){
-        if(branch !== 'staging'){
-            return false;
-        }
-    }
-    if(env == 'production'){
-        if(branch !== 'production'){
-            return false;
-        }
-    }
-return true;
-}
 /**
  * Preprocess files and run on specified device
  * @param {enum} env (dev | staging | production)
  */
 gulp.task('run', function () {
-    var env = getEnvironment(argv);
+
+    var env = getEnvironmentForBranch(branch);
 
     if (env == 'local') {
         console.log('Cannot run in local env, specify with flag (dev | staging | production)');
@@ -165,36 +154,26 @@ gulp.task('run', function () {
     config(env);
 
     if (device = 'android') {
-        return gulp.src('*.js', {read: false}).pipe(exec('ionic run ' + device));
+        return  exec('ionic run ' + device, function (err, stdout, stderr) {
+            console.log(stdout);
+            console.log(stderr);
+            cb(err)
+        });
     }
 
     else{
-        console.log('ios');
+       return  exec('ionic build ios ', function (err, stdout, stderr) {
+            console.log(stdout);
+            console.log(stderr);
+            cb(err)
+        });
+        /*
         return gulp.src('*.js', {read: false})
             .pipe(exec('ionic build ios'))
+            */
     }
 
 });
-
-
-
-function getEnvironment(argv){
-    var env;
-    if(argv.dev){
-        env = 'dev';
-    }
-    else if(argv.staging){
-        env = 'staging';
-    }
-    else if(argv.production){
-        env = 'production';
-    }
-    else{
-        env = 'local'
-    }
-
-    return env;
-}
 
 function getDevice(argv){
     var device = 'ios';
