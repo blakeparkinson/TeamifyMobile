@@ -69,7 +69,7 @@ gulp.task('serve', function () {
 /**
  * Push to upstream branch and automatically deploy if on environment branch
  */
-gulp.task('deploy', function () {
+gulp.task('deploy', function (cb) {
     var branch = git.branch();
     var env = getEnvironmentForBranch(branch);
     config(env);
