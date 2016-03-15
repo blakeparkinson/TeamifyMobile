@@ -79,7 +79,6 @@ gulp.task('deploy', function (cb) {
     exec('git push', function (err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
-        cb(err)
     });
 
     if(branch == 'dev' || branch == 'staging' || branch == 'master'){
