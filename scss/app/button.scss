@@ -14,4 +14,11 @@
     background-color: #FFF;
     color: $positive !important;
   }
+  &.button-clear-on-dark{
+    background-color: transparent;
+    border: 1px solid $primary-on-dark;
+    color: $primary-on-dark;
+  }
+
+
 }

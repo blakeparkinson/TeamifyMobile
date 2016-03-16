@@ -1,9 +1,10 @@
-angular.module('auth').controller('AuthController', function($scope, $auth, $state, $http, $rootScope, $q, $timeout) {
+angular.module('auth').controller('AuthController', function($scope, $auth, $state, $http,
+                                                             $ionicModal, $rootScope) {
     var vm = this;
     vm.email = "";
     vm.password = "";
 
-    vm.loading = true;
+    vm.loading = false;
     vm.login = function() {
         vm.loading = true;
         var credentials = {
@@ -49,6 +50,30 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
         });
     };
 
+    $ionicModal.fromTemplateUrl('forgotpassword.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+    }).then(function(modal) {
+        $scope.modal = modal;
+    })
 
+    vm.openModal = function() {
+        $scope.modal.show();
+    };
+    vm.closeModal = function() {
+        $scope.modal.hide();
+    };
+    //Cleanup the modal when we're done with it!
+    $scope.$on('$destroy', function() {
+        $scope.modal.remove();
+    });
+    // Execute action on hide modal
+    $scope.$on('modal.hidden', function() {
+        // Execute action
+    });
+    // Execute action on remove modal
+    $scope.$on('modal.removed', function() {
+        // Execute action
+    });
 
 });

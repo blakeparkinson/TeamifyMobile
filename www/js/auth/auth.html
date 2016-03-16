@@ -15,8 +15,34 @@
 
     </button>
     <div ng-if="auth.loginError" class="voffset2">We couldn't find that user.  Please Try again.</div>
-        <div class="center-block voffset4" style="color:#FFF; font-weight:bold; font-size:15px;">Forgot your password?</div>
+        <div ng-click="auth.openModal()" class="center-block voffset4" style="color:#FFF; font-weight:bold; font-size:15px;">Forgot your password?</div>
         <div class="center-block voffset8" style="color:#FFF;  font-size:15px;">Don't have an account? <b>Sign Up</b></div>
  <!--   <loading></loading> -->
 </div>
 </div>
+
+<script id="forgotpassword.html" type="text/ng-template">
+    <ion-modal-view class="background-positive stretch">
+        <ion-header-bar class="bar bar-header bar-positive">
+            <button ng-click="auth.closeModal()" class="button button-clear">Close</button>
+            <h1 class="title">Password Reset</h1>
+        </ion-header-bar>
+        <ion-content class="primary-on-dark">
+<div class="center-block" style="width:300px;">
+            <div  class="voffset6  font-size-3"><b>Forgot your password?</b>
+            </div>
+    <img src="img/forgotpassword.png" class="voffset4" style="width:50px; height:auto">
+    <div class="voffset4">We got ya covered.  Enter your email and we will send you a password reset link</div>
+    <label class="item item-input on-dark voffset7">
+    <input class="on-dark" type="text" placeholder="Email" style="text-align:center">
+
+        </label>
+    <div class=" voffset5">
+    <button class="button button-block button-clear-on-dark">Send Email</button>
+    </div>
+</div>
+
+
+        </ion-content>
+    </ion-modal-view>
+</script>

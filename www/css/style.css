@@ -9725,6 +9725,9 @@ a.button {
 .background-positive {
   background-color: #3DC5F5; }
 
+.primary-on-dark {
+  color: #FFF; }
+
 input[type="text"],
 input[type="password"],
 input[type="email"],
@@ -9758,10 +9761,15 @@ input[type="search"] {
   .button.button-white {
     background-color: #FFF;
     color: #3DC5F5 !important; }
+  .button.button-clear-on-dark {
+    background-color: transparent;
+    border: 1px solid #FFF;
+    color: #FFF; }
 
 .center-block {
-  margin: 0px auto;
-  display: block; }
+  margin: 0 auto;
+  display: block;
+  text-align: center; }
 
 .stretch {
   height: 100%;
@@ -9801,6 +9809,9 @@ input[type="search"] {
 
 .voffset9 {
   margin-top: 150px; }
+
+.font-size-3 {
+  font-size: 16px; }
 
 *::-webkit-input-placeholder {
   color: #FFF !important;
