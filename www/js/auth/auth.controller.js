@@ -3,8 +3,7 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
     vm.email = "";
     vm.password = "";
 
-    vm.loading = false;
-
+    vm.loading = true;
     vm.login = function() {
         vm.loading = true;
         var credentials = {

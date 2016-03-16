@@ -11,7 +11,7 @@
         </label>
     </div>
 
-    <button style="margin-top:20px; width:100%;" ng-click="auth.login()" ladda-button="auth.loading" data-style="expand-right" class="ladda-button button button-white button-large" ng-disabled="auth.loading"><span class="ladda-label">LOG IN</span>
+    <button style="margin-top:20px; width:100%;" data-spinner-color="#00BFFF" data-spinner-size="25" ng-click="auth.login()" ladda-button="auth.loading" data-style="slide-down" class="ladda-button button button-white button-large" ng-disabled="auth.loading"><span class="ladda-label">LOG IN</span>
 
     </button>
     <div ng-if="auth.loginError" class="voffset2">We couldn't find that user.  Please Try again.</div>

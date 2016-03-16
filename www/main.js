@@ -95,7 +95,7 @@ angular.module('starter.controllers', [])
 
         var deploy = new Ionic.Deploy();
         deploy.setChannel(deployChannel);
-        
+
         // Update app code with new release from Ionic Deploy
         $scope.doUpdate = function() {
             deploy.update().then(function(res) {
@@ -244,8 +244,7 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
     vm.email = "";
     vm.password = "";
 
-    vm.loading = false;
-
+    vm.loading = true;
     vm.login = function() {
         vm.loading = true;
         var credentials = {
