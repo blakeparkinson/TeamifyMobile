@@ -27,7 +27,10 @@
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
     "ionic-plugin-keyboard",
-    "ionic-plugin-deploy"
+    {
+      "locator": "https://github.com/ace68723/ionic-plugin-deploy",
+      "id": "ionic-plugin-deploy"
+    }
   ],
   "cordovaPlatforms": [
     "ios"

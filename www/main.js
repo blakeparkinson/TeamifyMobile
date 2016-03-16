@@ -92,7 +92,7 @@ angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope, deployChannel) {
 
-
+//
         var deploy = new Ionic.Deploy();
         deploy.setChannel(deployChannel);
 
@@ -197,15 +197,6 @@ angular.module('starter.services', [])
   };
 });
 
-/* jshint ignore:start */
-
-
-angular.module('app.core')
-.
-constant('baseApiUrl', 'http://teamify-development.herokuapp.com').constant('deployChannel', 'dev');
-
-
-/* jshint ignore:end */
 angular.module('auth').config(function($stateProvider, $authProvider, baseApiUrl) {
 
     $authProvider.loginUrl = baseApiUrl + '/api/authenticate';
@@ -293,3 +284,12 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
 
 
 });
+/* jshint ignore:start */
+
+
+angular.module('app.core')
+.
+constant('baseApiUrl', 'http://teamify-development.herokuapp.com').constant('deployChannel', 'dev');
+
+
+/* jshint ignore:end */
