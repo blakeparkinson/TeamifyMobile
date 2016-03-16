@@ -1,0 +1,16 @@
+<div class="center-block"  style="text-align:center; margin:150px;">
+    <div class="list">
+        <label class="item item-input">
+            <input type="email" placeholder="Email" ng-model="auth.email">
+        </label>
+        <label class="item item-input">
+            <input type="password" placeholder="password"   ng-model="auth.password">
+        </label>
+
+    </div>
+
+    <button ng-click="auth.login()" ladda-button="auth.loading" data-style="expand-right" class="ladda-button button button-positive " ng-disabled="auth.loading"><span class="ladda-label">LOG IN</span>
+    </button>
+
+ <!--   <loading></loading> -->
+</div>

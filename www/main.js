@@ -6,8 +6,9 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 
-angular.module('app.core',['ngAnimate', 'ngSanitize']);
-angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 'starter.services', 'app.core'])
+angular.module('app.core',['ngAnimate', 'ngSanitize', 'satellizer']);
+angular.module('auth', []);
+angular.module('starter', ['ionic','ionic.service.core', 'angularPromiseButtons', 'ladda', 'starter.controllers', 'starter.services', 'app.core', 'auth'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -26,6 +27,7 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
+
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -194,7 +196,94 @@ angular.module('starter.services', [])
   };
 });
 
+angular.module('auth').config(function($stateProvider, $authProvider, baseApiUrl) {
 
+    $authProvider.loginUrl = baseApiUrl + '/api/authenticate';
+
+    $stateProvider.state('auth', {
+        url: '/auth',
+        templateUrl:"js/auth/auth.html",
+        controller:'AuthController as auth'
+    })
+        .state('logout', {
+            url: '/logout',
+            controller: function($scope,$auth,$rootScope,$state) {
+
+                $auth.logout().then(function() {
+
+                    // Remove the authenticated user from local storage
+                    localStorage.removeItem('user');
+
+                    // Flip authenticated to false so that we no longer
+                    // show UI elements dependant on the user being logged in
+                    $rootScope.authenticated = false;
+
+                    // Remove the current user info from rootscope
+                    $rootScope.currentUser = null;
+
+                    $state.go('auth');
+                });
+            }
+        });
+
+});
+
+
+angular.module('auth').controller('AuthController', function($scope, $auth, $state, $http, $rootScope, $q, $timeout) {
+    var vm = this;
+    vm.email = "";
+    vm.password = "";
+
+    vm.loading = false;
+
+    vm.login = function() {
+        vm.loading = true;
+        var credentials = {
+            email: vm.email,
+            password: vm.password,
+            name: vm.name
+        };
+
+       $auth.login(credentials).then(function(response) {
+            // Return an $http request for the now authenticated
+            // user so that we can flatten the promise chainf
+
+
+            // Stringify the returned data to prepare it
+            // to go into local storage
+            var user = JSON.stringify(response.data.user);
+
+            // Set the stringified user data into local storage
+            localStorage.setItem('user', user);
+
+            // The user's authenticated state gets flipped to
+            // true so we can now show parts of the UI that rely
+            // on the user being logged in
+            $rootScope.authenticated = true;
+
+            // Putting the user's data on $rootScope allows
+            // us to access it anywhere across the app
+            $rootScope.currentUser = response.data.user;
+
+
+           vm.loading = false;
+            // Everything worked out so we can now redirect to
+            // the users state to view the data
+            $state.go('tab.dash');
+
+            // Handle errors
+        }, function(error) {
+            vm.loading = false;
+            vm.loginError = true;
+            vm.loginErrorText = error.data.error;
+            // Because we returned the $http.get request in the $auth.login
+            // promise, we can chain the next promise to the end here
+        });
+    };
+
+
+
+});
 /* jshint ignore:start */
 
 

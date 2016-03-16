@@ -8,5 +8,6 @@
     <orderEntry type="library" name="angularjs-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="Node Core" level="application" />
     <orderEntry type="library" name="i18n-node-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="Mobile node_modules" level="project" />
   </component>
 </module>
