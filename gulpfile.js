@@ -13,7 +13,8 @@ var git = require('git-rev-sync');
 var exec = require('child_process').exec;
 
 var paths = {
-  sass: ['./scss/**/*.scss'],
+    sass: ['./scss/ionic.app.scss','./scss/ladda.scss'],
+    watch: {sass: './scss/**/*scss'},
     preprocessing: {
         config: './preprocess/config.js',
         configxml: './preprocess/configxml.js'
@@ -27,7 +28,7 @@ gulp.task('default', ['sass']);
  * Run sass tasks
  */
 gulp.task('sass', function(done) {
-  gulp.src('./scss/**/*.scss')
+  gulp.src(paths.sass)
       .pipe(sass().on('error', sass.logError))
     .pipe(plug.concat('style.css'))
     .pipe(gulp.dest('./www/css/'))
@@ -43,7 +44,7 @@ gulp.task('sass', function(done) {
  * Watch Sass files and compile
  */
 gulp.task('watch', function() {
-    gulp.watch(paths.sass, ['sass']);
+    gulp.watch(paths.watch.sass, ['sass']);
     gulp.watch(paths.js, ['js']);
 });
 
