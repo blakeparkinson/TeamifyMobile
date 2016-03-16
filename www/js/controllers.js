@@ -5,6 +5,7 @@ angular.module('starter.controllers', [])
 
         var deploy = new Ionic.Deploy();
         deploy.setChannel(deployChannel);
+        
         // Update app code with new release from Ionic Deploy
         $scope.doUpdate = function() {
             deploy.update().then(function(res) {
