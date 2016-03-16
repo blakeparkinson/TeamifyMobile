@@ -85,7 +85,7 @@ gulp.task('deploy', function (cb) {
 
     console.log('Pushing to branch:' + branch);
 
-    exec('git push', function (err, stdout, stderr) {
+    exec('git push origin ' + branch, function (err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
     });
