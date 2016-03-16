@@ -10,7 +10,8 @@
     </div>
 
     <button ng-click="auth.login()" ladda-button="auth.loading" data-style="expand-right" class="ladda-button button button-positive " ng-disabled="auth.loading"><span class="ladda-label">LOG IN</span>
-    </button>
 
+    </button>
+    <div ng-if="auth.loginError">We couldn't find that user.  Please Try again.</div>
  <!--   <loading></loading> -->
 </div>
