@@ -1,10 +1,10 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {
+.controller('DashCtrl', function($scope, deployChannel) {
 
-console.log('ho');
+
         var deploy = new Ionic.Deploy();
-        deploy.setChannel("staging");
+        deploy.setChannel(deployChannel);
         // Update app code with new release from Ionic Deploy
         $scope.doUpdate = function() {
             deploy.update().then(function(res) {

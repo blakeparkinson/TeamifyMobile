@@ -90,11 +90,11 @@ angular.module('starter', ['ionic','ionic.service.core', 'angularPromiseButtons'
 
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {
+.controller('DashCtrl', function($scope, deployChannel) {
 
-console.log('ho');
+
         var deploy = new Ionic.Deploy();
-        deploy.setChannel("staging");
+        deploy.setChannel(deployChannel);
         // Update app code with new release from Ionic Deploy
         $scope.doUpdate = function() {
             deploy.update().then(function(res) {
@@ -288,7 +288,8 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
 
 
 angular.module('app.core')
-    .constant('baseApiUrl', 'http://localhost:7203').constant('deployChannel', 'N/A');
+.
+constant('baseApiUrl', 'http://teamify-development.herokuapp.com').constant('deployChannel', 'dev');
 
 
 /* jshint ignore:end */
