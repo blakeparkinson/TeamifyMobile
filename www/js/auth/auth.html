@@ -1,0 +1,22 @@
+<div class="background-positive stretch">
+    <input type="email">
+    <div style="text-align:center; margin-top:50px; margin-left:auto; margin-right:auto; width:300px;" >
+        <img src="img/logo.png" style="width:150px; margin-bottom:20px; height:auto;">
+    <div class="list">
+        <label class="item item-input on-dark">
+            <input class="on-dark" type="email" placeholder="Email" ng-model="auth.email">
+        </label>
+        <label class="item item-input on-dark">
+            <input class="on-dark" type="password" placeholder="Password"   ng-model="auth.password">
+        </label>
+    </div>
+
+    <button style="margin-top:20px; width:100%;" ng-click="auth.login()" ladda-button="auth.loading" data-style="expand-right" class="ladda-button button button-white button-large" ng-disabled="auth.loading"><span class="ladda-label">LOG IN</span>
+
+    </button>
+    <div ng-if="auth.loginError voffset2">We couldn't find that user.  Please Try again.</div>
+        <div class="center-block voffset4" style="color:#FFF; font-weight:bold; font-size:15px;">Forgot your password?</div>
+        <div class="center-block voffset8" style="color:#FFF;  font-size:15px;">Don't have an account? <b>Sign Up</b></div>
+ <!--   <loading></loading> -->
+</div>
+</div>

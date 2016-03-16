@@ -1,0 +1,21 @@
+@import 'app/colors',
+'app/form',
+'app/item',
+'app/button',
+'app/util';
+
+
+
+//Set placeholder color
+*::-webkit-input-placeholder {
+  color: #FFF !important;
+  opacity: 0.5;
+}
+*::-moz-placeholder {
+  color: #FFF !important;
+  opacity: 0.5;
+}
+*:-ms-input-placeholder { /* IE10+ */
+  color: #FFF !important;
+  opacity: 0.5;
+}

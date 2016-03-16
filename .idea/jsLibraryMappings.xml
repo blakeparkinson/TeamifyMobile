@@ -1,7 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="JavaScriptLibraryMappings">
-    <file url="file://$PROJECT_DIR$/gulpfile.js" libraries="{Node, Node Core, i18n-node-DefinitelyTyped}" />
-    <file url="file://$PROJECT_DIR$/preprocess/configxml.js" libraries="{Node, angularjs-DefinitelyTyped}" />
-  </component>
-</project>
+<project version="4" />

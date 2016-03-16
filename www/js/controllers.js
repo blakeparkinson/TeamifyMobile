@@ -2,7 +2,7 @@ angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope) {
 
-
+console.log('ho');
         var deploy = new Ionic.Deploy();
         deploy.setChannel("staging");
         // Update app code with new release from Ionic Deploy

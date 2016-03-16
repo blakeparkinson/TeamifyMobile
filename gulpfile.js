@@ -5,19 +5,21 @@ var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
+var plug = require('gulp-load-plugins')();
 var preprocess = require('gulp-preprocess');
 var argv = require('yargs').argv;
 //var exec = require('gulp-exec');
 var git = require('git-rev-sync');
-
 var exec = require('child_process').exec;
 
 var paths = {
-  sass: ['./scss/**/*.scss'],
+    sass: ['./scss/ionic.app.scss','./scss/ladda.scss'],
+    watch: {sass: './scss/**/*scss'},
     preprocessing: {
         config: './preprocess/config.js',
         configxml: './preprocess/configxml.js'
-    }
+    },
+    js: ['./www/js/**/*js']
 };
 
 gulp.task('default', ['sass']);
@@ -26,9 +28,9 @@ gulp.task('default', ['sass']);
  * Run sass tasks
  */
 gulp.task('sass', function(done) {
-  gulp.src('./scss/ionic.app.scss')
-    .pipe(sass())
-    .on('error', sass.logError)
+  gulp.src(paths.sass)
+      .pipe(sass().on('error', sass.logError))
+    .pipe(plug.concat('style.css'))
     .pipe(gulp.dest('./www/css/'))
     .pipe(minifyCss({
       keepSpecialComments: 0
@@ -42,9 +44,9 @@ gulp.task('sass', function(done) {
  * Watch Sass files and compile
  */
 gulp.task('watch', function() {
-    gulp.watch(paths.sass, ['sass']);
+    gulp.watch(paths.watch.sass, ['sass']);
+    gulp.watch(paths.js, ['js']);
 });
-
 
 /**
  * Preprocess files and serve in browser (default env is local)
@@ -65,6 +67,14 @@ gulp.task('serve', function () {
 
 });
 
+gulp.task('js', function(){
+    return gulp.src(paths.js)
+        .pipe(plug.concat('main.js'))
+        .pipe(gulp.dest('./www/'));
+});
+
+
+
 
 /**
  * Push to upstream branch and automatically deploy if on environment branch
@@ -76,7 +86,7 @@ gulp.task('deploy', function (cb) {
 
     console.log('Pushing to branch:' + branch);
 
-    exec('git push', function (err, stdout, stderr) {
+    exec('git push origin ' + branch, function (err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
     });
@@ -195,7 +205,8 @@ function config(env) {
 
     //preprocess angular config module
     console.log('setting angular config variables for environment: ' + env);
-    /*
+
+
     gulp.src(paths.preprocessing.config).pipe(
         preprocess(
             {
@@ -203,8 +214,8 @@ function config(env) {
                     ENV: env,
                     DEBUG: true
                 }
-            })).pipe(gulp.dest('./www/js/app/core/'));
-   */
+            })).pipe(gulp.dest('./www/js/core/'));
+
 }
 
 

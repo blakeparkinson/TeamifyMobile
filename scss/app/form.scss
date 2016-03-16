@@ -1,0 +1,11 @@
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="search"]{
+ background-color:transparent !important;
+  &.on-dark{
+    color: #FFF;
+  }
+
+}
+
