@@ -29,17 +29,26 @@
         </ion-header-bar>
         <ion-content class="primary-on-dark">
 <div class="center-block" style="width:300px;">
+    <div ng-if="auth.emailSent == true">
+        <div  class="voffset6  font-size-3"><b>Email Sent!</b>
+         <div class="voffset4">Be on the lookout and click the link to reset your password</div>
+    </div>
+        </div>
+        <div ng-if="auth.emailSent == false">
             <div  class="voffset6  font-size-3"><b>Forgot your password?</b>
             </div>
     <img src="img/forgotpassword.png" class="voffset4" style="width:50px; height:auto">
     <div class="voffset4">We got ya covered.  Enter your email and we will send you a password reset link</div>
     <label class="item item-input on-dark voffset7">
-    <input class="on-dark" type="text" placeholder="Email" style="text-align:center">
+    <input class="on-dark" ng-model="auth.resetEmail" type="text" placeholder="Email" style="text-align:center">
 
         </label>
     <div class=" voffset5">
-    <button class="button button-block button-clear-on-dark">Send Email</button>
+
+
+    <button  ng-disabled="auth.loadingEmail" class="ladda-button button button-block button-clear-on-dark" data-spinner-color="#FFF"  ladda-button="auth.loadingEmail" data-style="slide-down" data-spinner-size="25" ng-click="auth.sendResetEmail()"><span class="ladda-label">Send Email</span></button>
     </div>
+            </div>
 </div>
 
 

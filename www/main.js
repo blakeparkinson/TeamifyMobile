@@ -6,7 +6,7 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 
-angular.module('app.core',['ngAnimate', 'ngSanitize', 'satellizer']);
+angular.module('app.core',['ngAnimate', 'ngSanitize', 'satellizer', 'ngResource']);
 angular.module('auth', []);
 angular.module('starter', ['ionic','ionic.service.core', 'angularPromiseButtons', 'ladda', 'starter.controllers', 'starter.services', 'app.core', 'auth'])
 
@@ -231,7 +231,7 @@ angular.module('auth').config(function($stateProvider, $authProvider, baseApiUrl
 
 
 angular.module('auth').controller('AuthController', function($scope, $auth, $state, $http,
-                                                             $ionicModal, $rootScope) {
+                                                             $ionicModal, $rootScope, usersResource) {
     var vm = this;
     vm.email = "";
     vm.password = "";
@@ -294,6 +294,8 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
     };
     vm.closeModal = function() {
         $scope.modal.hide();
+        vm.emailSent =  false;
+        vm.resetEmail  = '';
     };
     //Cleanup the modal when we're done with it!
     $scope.$on('$destroy', function() {
@@ -308,6 +310,26 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
         // Execute action
     });
 
+    vm.resetEmail = '';
+    vm.emailSent =  false;
+    vm.sendResetEmail = function(){
+
+        if(vm.resetEmail == ''){
+            return;
+        }
+        vm.loadingEmail = true;
+        usersResource.sendResetEmail(vm.resetEmail).then(function(result){
+                vm.loadingEmail = false;
+            vm.emailSent = true;
+
+        },
+        function(error){
+            vm.loadingEmail = false;
+           // @tmf handle
+        })
+
+    };
+
 });
 /* jshint ignore:start */
 
@@ -317,3 +339,70 @@ angular.module('app.core')
 
 
 /* jshint ignore:end */
+(function () {
+    'use strict';
+
+    angular.module('app.core').factory(
+        'usersResource', usersResource);
+
+    /* @ngInject */
+    function usersResource($resource, baseApiUrl) {
+
+        var factory = {};
+
+        function buildResource(subpath) {
+            return $resource(
+                baseApiUrl + 'api/users' + subpath, {}, {
+                    update: {
+                        method: 'PUT'
+                    }
+                });
+        }
+
+        factory.sendResetEmail = function (email) {
+            console.log("url:" + baseApiUrl);
+            var resource = $resource(baseApiUrl + '/api/authenticate/forgot',{},{ reset:{
+                method: 'POST',
+                isArray: false
+            }});
+            return resource.reset({},{email: email}).$promise;
+        };
+
+        factory.resetPassword = function (token, password) {
+            var resource = $resource(baseApiUrl + 'authenticate/reset/:token',{},{ reset:{
+                method: 'POST',
+                isArray: false
+            }});
+            return resource.reset({token: token},{password: password}).$promise;
+        };
+
+
+        factory.getActiveUsers = function () {
+            var resource = buildResource('/active');
+            return resource.query({}).$promise;
+        };
+
+        factory.getUsers = function () {
+            var resource = buildResource('');
+            return resource.query({}).$promise;
+        };
+
+        factory.create = function (user) {
+            var resource = buildResource('');
+            return resource.save(user).$promise;
+        };
+
+        factory.update = function (user) {
+            var resource = buildResource('/:_id');
+            return resource.update({_id: user._id}, user).$promise;
+        };
+
+        factory.getFile = function (userId) {
+            var resource = buildResource('/:_id/file');
+            return resource.query({_id: userId}).$promise;
+        };
+
+        return factory;
+
+    }
+})();

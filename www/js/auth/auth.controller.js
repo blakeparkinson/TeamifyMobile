@@ -1,5 +1,5 @@
 angular.module('auth').controller('AuthController', function($scope, $auth, $state, $http,
-                                                             $ionicModal, $rootScope) {
+                                                             $ionicModal, $rootScope, usersResource) {
     var vm = this;
     vm.email = "";
     vm.password = "";
@@ -62,6 +62,8 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
     };
     vm.closeModal = function() {
         $scope.modal.hide();
+        vm.emailSent =  false;
+        vm.resetEmail  = '';
     };
     //Cleanup the modal when we're done with it!
     $scope.$on('$destroy', function() {
@@ -75,5 +77,25 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
     $scope.$on('modal.removed', function() {
         // Execute action
     });
+
+    vm.resetEmail = '';
+    vm.emailSent =  false;
+    vm.sendResetEmail = function(){
+
+        if(vm.resetEmail == ''){
+            return;
+        }
+        vm.loadingEmail = true;
+        usersResource.sendResetEmail(vm.resetEmail).then(function(result){
+                vm.loadingEmail = false;
+            vm.emailSent = true;
+
+        },
+        function(error){
+            vm.loadingEmail = false;
+           // @tmf handle
+        })
+
+    };
 
 });
