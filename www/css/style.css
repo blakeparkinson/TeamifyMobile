@@ -9759,22 +9759,25 @@ input[type="search"] {
       padding: 15px;
       margin: 5px; }
 
-.button {
+.button.button-large {
+  border-radius: 30px;
+  height: 60px; }
+
+.button.button-white {
+  background-color: #FFF;
+  color: #3DC5F5 !important; }
+
+.button.button-clear-on-dark {
+  background-color: transparent;
+  border: 1px solid #FFF;
+  color: #FFF; }
+
+.button.button-round {
   border-radius: 25px;
   letter-spacing: 1px;
   font-weight: 400;
   font-size: 15px;
   height: 50px; }
-  .button.button-large {
-    border-radius: 30px;
-    height: 60px; }
-  .button.button-white {
-    background-color: #FFF;
-    color: #3DC5F5 !important; }
-  .button.button-clear-on-dark {
-    background-color: transparent;
-    border: 1px solid #FFF;
-    color: #FFF; }
 
 .center-block {
   margin: 0 auto;

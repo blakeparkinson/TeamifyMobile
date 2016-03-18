@@ -1,23 +1,42 @@
 <ion-view view-title="Select Organization" >
+    <ion-nav-buttons side="right">
+        <button class="button ion-plus" ng-click="selectOrganization.clickButton()"></button>
+    </ion-nav-buttons>
 <div ng-controller="SelectOrganization as selectOrganization">
     <ion-content>
 
-        <div class="list list-inset">
-            <label class="item item-input">
-                <i class="icon ion-search placeholder-icon"></i>
-                <input template-url="js/templates/autocomplete.html"  ion-autocomplete type="text" readonly="readonly" class="ion-autocomplete"
+
+        <div class="list">
+
+
+            <a class="item" ng-repeat="organization in selectOrganization.activeOrganizations">
+               {{organization.name}}
+            </a>
+
+
+
+            <div ng-if="selectOrganization.pendingOrganizations.length">
+                <div class="item item-divider">
+                    Pending Requests
+                </div>
+
+                <a class="item"  ng-repeat="organization in selectOrganization.pendingOrganizations">
+                  {{organization.name}}
+                </a>
+            </div>
+
+        </div>
+
+        <div style="display:none;">
+
+                <input manage-externally="true" template-url="js/templates/autocomplete.html"  ion-autocomplete type="text" readonly="readonly" class="ion-autocomplete"
                        autocomplete="on" max-selected-items="1"  ng-model="model" items-clicked-method="selectOrganization.clickedMethod(callback)"  item-view-value-key="name"  items-method="selectOrganization.callbackMethod(query)" />
 
-            </label>
+
         </div>
 
-<div class="row">
-    <div ng-if="selectOrganization.activeOrganizations.length">
-        <div ng-repeat="organization in selectOrganization.activeOrganizations">
-            <div>{{organization.name}}</div>
-        </div>
-        </div>
-    <div ng-if="!selectOrganization.activeOrganizations.length">
+
+        <div ng-if="!selectOrganization.activeOrganizations.length">
         <div class="center-block center-text">
             <div class="voffset5 font-size-3"> You do not yet belong to any organizations</div>
             <img src="img/organization.png" class="voffset5" style="width:60px; height:auto;">
@@ -25,9 +44,20 @@
                 or give the manager the email you used to sign up.</div>
         </div>
     </div>
-</div>
+
 
     </ion-content>
 </div>
 </ion-view>
+
+<script id="confirmJoinOrganization.html" type="text/ng-template">
+    <ion-popover-view>
+        <ion-header-bar>
+            <h1 class="title">My Popover Title</h1>
+        </ion-header-bar>
+        <ion-content>
+            Hello!
+        </ion-content>
+    </ion-popover-view>
+</script>
 
