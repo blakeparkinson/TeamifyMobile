@@ -34,11 +34,18 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
             // us to access it anywhere across the app
             $rootScope.currentUser = response.data.user;
 
-
-           vm.loading = false;
+            vm.loading = false;
             // Everything worked out so we can now redirect to
             // the users state to view the data
-            $state.go('app.messages');
+           if(response.data.user.organizations.length > 0){
+               $rootScope.activeOrganization = response.data.user.organizations[0];
+               $state.go('app.messages');
+           }
+           else{
+               $state.go('app.selectOrganization');
+           }
+
+
 
             // Handle errors
         }, function(error) {

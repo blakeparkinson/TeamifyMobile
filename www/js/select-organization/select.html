@@ -5,15 +5,11 @@
 <div ng-controller="SelectOrganization as selectOrganization">
     <ion-content>
 
-
         <div class="list">
-
-
-            <a class="item" ng-repeat="organization in selectOrganization.activeOrganizations">
-               {{organization.name}}
+            <a class="item item-icon-right" ng-repeat="organization in currentUser.organizations">
+                 {{organization.name}}
+                <i ng-if="organization._id == activeOrganization._id" class="icon ion-ios-checkmark-empty"></i>
             </a>
-
-
 
             <div ng-if="selectOrganization.pendingOrganizations.length">
                 <div class="item item-divider">
@@ -21,10 +17,9 @@
                 </div>
 
                 <a class="item"  ng-repeat="organization in selectOrganization.pendingOrganizations">
-                  {{organization.name}}
+
                 </a>
             </div>
-
         </div>
 
         <div style="display:none;">
@@ -36,14 +31,15 @@
         </div>
 
 
-        <div ng-if="!selectOrganization.activeOrganizations.length">
+        <div ng-if="!currentUser.organizations.length">
+
         <div class="center-block center-text">
             <div class="voffset5 font-size-3"> You do not yet belong to any organizations</div>
             <img src="img/organization.png" class="voffset5" style="width:60px; height:auto;">
             <div class="font-size-1 voffset4 secondary-on-light ">Search for your company and send an invitation request,
                 or give the manager the email you used to sign up.</div>
-        </div>
-    </div>
+
+    </div></div>
 
 
     </ion-content>

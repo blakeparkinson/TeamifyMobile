@@ -128,6 +128,13 @@ angular.module('starter', ['ionic','ionic.service.core',
                 // we are grabbing what is in local storage
                 $rootScope.currentUser = user;
 
+                console.log($rootScope.currentUser)
+                if(user.organizations.length > 0){
+                    $rootScope.activeOrganization = user.organizations[0];
+                    console.log($rootScope.activeOrganization);
+                }
+
+
                 // If the user is logged in and we hit the auth route we don't need
                 // to stay there and can send the user to the main state
                 if (toState.name === 'auth') {

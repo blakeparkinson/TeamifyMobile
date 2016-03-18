@@ -128,6 +128,13 @@ angular.module('starter', ['ionic','ionic.service.core',
                 // we are grabbing what is in local storage
                 $rootScope.currentUser = user;
 
+                console.log($rootScope.currentUser)
+                if(user.organizations.length > 0){
+                    $rootScope.activeOrganization = user.organizations[0];
+                    console.log($rootScope.activeOrganization);
+                }
+
+
                 // If the user is logged in and we hit the auth route we don't need
                 // to stay there and can send the user to the main state
                 if (toState.name === 'auth') {
@@ -322,11 +329,18 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
             // us to access it anywhere across the app
             $rootScope.currentUser = response.data.user;
 
-
-           vm.loading = false;
+            vm.loading = false;
             // Everything worked out so we can now redirect to
             // the users state to view the data
-            $state.go('app.messages');
+           if(response.data.user.organizations.length > 0){
+               $rootScope.activeOrganization = response.data.user.organizations[0];
+               $state.go('app.messages');
+           }
+           else{
+               $state.go('app.selectOrganization');
+           }
+
+
 
             // Handle errors
         }, function(error) {
@@ -458,35 +472,38 @@ angular.module('app.selectOrganization')
 
 
     angular.module('app.selectOrganization')
-        .controller('SelectOrganization', function MessagesController($scope, $log, $http, baseApiUrl, $ionicPopup, $timeout, organizationsResource) {
-        var vm = this;
+        .controller('SelectOrganization', function MessagesController( $ionicBackdrop, $scope, $log, $http, baseApiUrl, $ionicPopup, $timeout, organizationsResource) {
+            var vm = this;
             vm.pendingOrganizations = [];
 
-            $scope.showConfirm = function() {
-                var confirmPopup = $ionicPopup.confirm({
-                    title: 'Consume Ice Cream',
-                    template: 'Are you sure you want to eat this ice cream?'
-                });
+           $scope.showConfirm = function(item) {
 
+                var confirmPopup = $ionicPopup.confirm({
+                    title: 'Request Invite?',
+                    template: 'Once the manager approves your request you will be added to this organization'
+                });
+               $ionicBackdrop.retain();
                 confirmPopup.then(function(res) {
                     if(res) {
-                        console.log('You are sure');
-                    } else {
-                        console.log('You are not sure');
+
+                        organizationsResource.save(item._id).then(function(success){
+                            $log.log(success);
+                            vm.pendingOrganizations.push(item);
+                        },
+                        function(err){
+                            $log.error(err);
+                        })
+
                     }
                 });
+
+
             };
 
 
-$scope.showConfirm();
             vm.clickedMethod = function (callback) {
 
-
-
-
-
-                vm.pendingOrganizations.push(callback.item);
-
+                $scope.showConfirm(callback.item);
 
             }
 // inside your controller you can define the 'clickButton()' method the following way
@@ -517,7 +534,7 @@ $scope.showConfirm();
         'organizationsResource', organizationsResource);
 
     /* @ngInject */
-    function organizationsResource($resource, baseApiUrl) {
+    function organizationsResource($resource, baseApiUrl, $rootScope) {
 
         var factory = {};
 
@@ -533,6 +550,11 @@ $scope.showConfirm();
         factory.search = function (query) {
             var resource = buildResource('/search');
             return resource.query({name: query}).$promise;
+        };
+
+        factory.save = function(organizationId) {
+            var resource = buildResource('/:_id/adduser');
+            return resource.save({_id:organizationId},{userId: $rootScope.currentUser._id}).$promise;
         };
 
         return factory;

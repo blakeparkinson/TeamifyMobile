@@ -3,35 +3,38 @@
 
 
     angular.module('app.selectOrganization')
-        .controller('SelectOrganization', function MessagesController($scope, $log, $http, baseApiUrl, $ionicPopup, $timeout, organizationsResource) {
-        var vm = this;
+        .controller('SelectOrganization', function MessagesController( $ionicBackdrop, $scope, $log, $http, baseApiUrl, $ionicPopup, $timeout, organizationsResource) {
+            var vm = this;
             vm.pendingOrganizations = [];
 
-            $scope.showConfirm = function() {
-                var confirmPopup = $ionicPopup.confirm({
-                    title: 'Consume Ice Cream',
-                    template: 'Are you sure you want to eat this ice cream?'
-                });
+           $scope.showConfirm = function(item) {
 
+                var confirmPopup = $ionicPopup.confirm({
+                    title: 'Request Invite?',
+                    template: 'Once the manager approves your request you will be added to this organization'
+                });
+               $ionicBackdrop.retain();
                 confirmPopup.then(function(res) {
                     if(res) {
-                        console.log('You are sure');
-                    } else {
-                        console.log('You are not sure');
+
+                        organizationsResource.save(item._id).then(function(success){
+                            $log.log(success);
+                            vm.pendingOrganizations.push(item);
+                        },
+                        function(err){
+                            $log.error(err);
+                        })
+
                     }
                 });
+
+
             };
 
 
-$scope.showConfirm();
             vm.clickedMethod = function (callback) {
 
-
-
-
-
-                vm.pendingOrganizations.push(callback.item);
-
+                $scope.showConfirm(callback.item);
 
             }
 // inside your controller you can define the 'clickButton()' method the following way

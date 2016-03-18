@@ -20,11 +20,21 @@
         <ion-content class="background-dark">
 
             <div class="sidebar">
+                <div ng-if="currentUser.organizations.length">
+                <ion-list class="list-dark ">
+
+                    <ion-item  menu-close ui-sref="app.selectOrganization">
+                        {{activeOrganization.name}} <i class="icon ion-location"></i>
+                        </ion-item>
+                    </ion-list>
+
+
+                    </div>
                 <div class="user"></div>
-            <div class="avatar avatar-large voffset5 center-block">
+            <div class="avatar avatar-large voffset4 center-block">
               {{currentUser | initials}}
             </div>
-
+        <div class="voffset4"></div>
             <div ng-if="!currentUser.organizations.length">
                 <div class="voffset8 center-block center-text primary-on-dark font-size-3">You do not belong to any
                 organizations</div>
