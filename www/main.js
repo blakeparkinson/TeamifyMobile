@@ -7,8 +7,13 @@
 // 'starter.controllers' is found in controllers.js
 
 angular.module('app.core',['ngAnimate', 'ngSanitize', 'satellizer', 'ngResource']);
+
 angular.module('auth', []);
-angular.module('starter', ['ionic','ionic.service.core', 'angularPromiseButtons', 'ladda', 'starter.controllers', 'starter.services', 'app.core', 'auth'])
+angular.module('app.messages', []);
+angular.module('app.selectOrganization', []);
+angular.module('starter', ['ionic','ionic.service.core',
+    'angularPromiseButtons', 'ladda', 'starter.controllers', 'starter.services', 'app.core', 'auth',
+'app.messages', 'app.selectOrganization', 'ion-autocomplete'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -33,7 +38,19 @@ angular.module('starter', ['ionic','ionic.service.core', 'angularPromiseButtons'
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
+
+
   $stateProvider
+      .state(
+      'app', {
+          abstract: true,
+          views: {
+              'mainContent': {
+                  templateUrl: 'js/main-content.html'
+              }
+          }
+
+      })
 
   // setup an abstract state for the tabs directive
     .state('tab', {
@@ -86,7 +103,46 @@ angular.module('starter', ['ionic','ionic.service.core', 'angularPromiseButtons'
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/dash');
 
-});
+})
+    .run(function ($rootScope, $state) {
+
+        // $stateChangeStart is fired whenever the state changes. We can use some parameters
+        // such as toState to hook into details about the state as it is changing
+        $rootScope.$on('$stateChangeStart', function (event, toState) {
+
+            // Grab the user from local storage and parse it to an object
+
+            var user = JSON.parse(localStorage.getItem('user'));
+
+
+            // If there is any user data in local storage then the user is quite
+            // likely authenticated. If their token is expired, or if they are
+            // otherwise not actually authenticated, they will be redirected to
+            // the auth state because of the rejected request anyway
+            if (user) {
+
+                $rootScope.authenticated = true;
+
+                // Putting the user's data on $rootScope allows
+                // us to access it anywhere across the app. Here
+                // we are grabbing what is in local storage
+                $rootScope.currentUser = user;
+
+                // If the user is logged in and we hit the auth route we don't need
+                // to stay there and can send the user to the main state
+                if (toState.name === 'auth') {
+
+                    // Preventing the default behavior allows us to use $state.go
+                    // to change states
+                    event.preventDefault();
+
+                    // go to the 'main' state which in our case is users
+                    $state.go('app.messages');
+                }
+            }
+
+        });
+    });
 
 angular.module('starter.controllers', [])
 
@@ -270,7 +326,7 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
            vm.loading = false;
             // Everything worked out so we can now redirect to
             // the users state to view the data
-            $state.go('tab.dash');
+            $state.go('app.messages');
 
             // Handle errors
         }, function(error) {
@@ -339,6 +395,123 @@ angular.module('app.core')
 
 
 /* jshint ignore:end */
+var core = angular.module('app.core');
+
+
+
+core.filter('initials', function () {
+    return function (user) {
+        var str = user.name.first.charAt(0) + user.name.last.charAt(0);
+        return str.toUpperCase();
+    };
+});
+
+//
+
+angular.module('app.messages')
+    .config(function($stateProvider) {
+        $stateProvider
+            .state('app.messages', {
+
+                url: '/messages',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'js/messages/messages.html'
+                    }
+                }
+            });
+
+    }); //
+(function () {
+    'use strict';
+    var module = angular.module('app.messages');
+    /* globals angular */
+    module.controller('MessagesController', MessagesController);
+
+
+    MessagesController.$inject = [];
+
+    function MessagesController($log) {
+        $log.log('here');
+    }
+
+
+})();
+
+angular.module('app.selectOrganization')
+    .config(function($stateProvider) {
+        $stateProvider
+            .state('app.selectOrganization', {
+
+                url: '/selectorganization',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'js/select-organization/select.html',
+                        controller: 'SelectOrganization as selectOrganization'
+                    }
+                }
+            });
+
+    });
+(function () {
+    'use strict';
+
+
+    angular.module('app.selectOrganization')
+        .controller('SelectOrganization', function MessagesController($log, $http, baseApiUrl, organizationsResource) {
+        var vm = this;
+            vm.activeOrganizations = [];
+            vm.clickedMethod = function (callback) {
+
+                vm.activeOrganizations.push(callback.item);
+
+            }
+
+           vm.callbackMethod = function (query, isInitializing) {
+               if (isInitializing) {
+                   // depends on the configuration of the `items-method-value-key` (items) and the `item-value-key` (name) and `item-view-value-key` (name)
+                   return {items: []}
+               } else {
+                   return $http.get(baseApiUrl + '/api/organizations/search?name=' + query);
+               }
+           }
+
+
+
+
+    });
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('app.core').factory(
+        'organizationsResource', organizationsResource);
+
+    /* @ngInject */
+    function organizationsResource($resource, baseApiUrl) {
+
+        var factory = {};
+
+        function buildResource(subpath) {
+            return $resource(
+                baseApiUrl + '/api/organizations' + subpath, {}, {
+                    update: {
+                        method: 'PUT'
+                    }
+                });
+        }
+
+        factory.search = function (query) {
+            var resource = buildResource('/search');
+            return resource.query({name: query}).$promise;
+        };
+
+        return factory;
+
+    }
+})();
+//
 (function () {
     'use strict';
 

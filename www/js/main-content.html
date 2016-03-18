@@ -1,0 +1,51 @@
+
+
+<ion-side-menus id="sideMenu"  enable-menu-with-back-views="false">
+    <ion-side-menu-content>
+        <ion-nav-bar class="bar-positive">
+            <ion-nav-back-button>
+            </ion-nav-back-button>
+
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+                </button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="menuContent"></ion-nav-view>
+    </ion-side-menu-content>
+
+    <ion-side-menu side="left">
+
+
+        <ion-content class="background-dark">
+
+            <div class="sidebar">
+                <div class="user"></div>
+            <div class="avatar avatar-large voffset5 center-block">
+              {{currentUser | initials}}
+            </div>
+
+            <div ng-if="!currentUser.organizations.length">
+                <div class="voffset8 center-block center-text primary-on-dark font-size-3">You do not belong to any
+                organizations</div>
+                <button  menu-close class="center-block voffset4 button button-stable" ui-sref="app.selectOrganization">add organization</button>
+            </div>
+            <div ng-if="currentUser.organizations.length">
+
+            <ion-list class="list-dark ">
+
+                <ion-item  menu-close ui-sref="app.messages">
+                        Messages
+                    <span class="badge badge-assertive">{{app.unreadMessagesCount}}</span>
+                </ion-item>
+
+                <ion-item>
+                    <button class="button button-positive" ui-sref="logout">Logout</button>
+                </ion-item>
+
+            </ion-list>
+                </div>
+            </div>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>

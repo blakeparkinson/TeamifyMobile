@@ -2,13 +2,28 @@
 'app/form',
 'app/item',
 'app/button',
-'app/util';
+'app/util',
+'app/item',
+'app/sidebar',
+'app/type';
 
-
-.font-size-3{
-  font-size:16px;
+*::-webkit-input-placeholder {
+  color: $disabled-on-light !important;
+  opacity: 0.5;
 }
+*::-moz-placeholder {
+  color: $disabled-on-light !important;
+  opacity: 0.5;
+}
+*:-ms-input-placeholder {
+  color: $disabled-on-light !important;
+  opacity: 0.5;
+}
+
+
+
 //Set placeholder color
+/*
 *::-webkit-input-placeholder {
   color: #FFF !important;
   opacity: 0.5;
@@ -17,8 +32,34 @@
   color: #FFF !important;
   opacity: 0.5;
 }
-*:-ms-input-placeholder { /* IE10+ */
+*:-ms-input-placeholder {
   color: #FFF !important;
   opacity: 0.5;
+}
+*/
+
+  body{
+    color: $primary-on-light;
+  }
+
+.avatar {
+  background-color : $stable;
+  color            : $primary-on-light;
+  width            : 40px;
+  height           : 40px;
+  text-align       : center;
+  line-height      : 40px;
+  border-radius    : 20px;
+  font-size        : 16px;
+  font-weight      : 300;
+
+  &.avatar-large{
+    width:60px;
+    padding-top:10px;
+    height:60px;
+    border-radius:30px;
+    font-size:22px;
+
+  }
 }
 

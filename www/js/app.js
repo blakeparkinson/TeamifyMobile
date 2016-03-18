@@ -7,8 +7,13 @@
 // 'starter.controllers' is found in controllers.js
 
 angular.module('app.core',['ngAnimate', 'ngSanitize', 'satellizer', 'ngResource']);
+
 angular.module('auth', []);
-angular.module('starter', ['ionic','ionic.service.core', 'angularPromiseButtons', 'ladda', 'starter.controllers', 'starter.services', 'app.core', 'auth'])
+angular.module('app.messages', []);
+angular.module('app.selectOrganization', []);
+angular.module('starter', ['ionic','ionic.service.core',
+    'angularPromiseButtons', 'ladda', 'starter.controllers', 'starter.services', 'app.core', 'auth',
+'app.messages', 'app.selectOrganization', 'ion-autocomplete'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -33,7 +38,19 @@ angular.module('starter', ['ionic','ionic.service.core', 'angularPromiseButtons'
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
+
+
   $stateProvider
+      .state(
+      'app', {
+          abstract: true,
+          views: {
+              'mainContent': {
+                  templateUrl: 'js/main-content.html'
+              }
+          }
+
+      })
 
   // setup an abstract state for the tabs directive
     .state('tab', {
@@ -86,4 +103,43 @@ angular.module('starter', ['ionic','ionic.service.core', 'angularPromiseButtons'
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/dash');
 
-});
+})
+    .run(function ($rootScope, $state) {
+
+        // $stateChangeStart is fired whenever the state changes. We can use some parameters
+        // such as toState to hook into details about the state as it is changing
+        $rootScope.$on('$stateChangeStart', function (event, toState) {
+
+            // Grab the user from local storage and parse it to an object
+
+            var user = JSON.parse(localStorage.getItem('user'));
+
+
+            // If there is any user data in local storage then the user is quite
+            // likely authenticated. If their token is expired, or if they are
+            // otherwise not actually authenticated, they will be redirected to
+            // the auth state because of the rejected request anyway
+            if (user) {
+
+                $rootScope.authenticated = true;
+
+                // Putting the user's data on $rootScope allows
+                // us to access it anywhere across the app. Here
+                // we are grabbing what is in local storage
+                $rootScope.currentUser = user;
+
+                // If the user is logged in and we hit the auth route we don't need
+                // to stay there and can send the user to the main state
+                if (toState.name === 'auth') {
+
+                    // Preventing the default behavior allows us to use $state.go
+                    // to change states
+                    event.preventDefault();
+
+                    // go to the 'main' state which in our case is users
+                    $state.go('app.messages');
+                }
+            }
+
+        });
+    });

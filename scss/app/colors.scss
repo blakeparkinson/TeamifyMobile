@@ -2,6 +2,15 @@
   background-color: $positive;
 }
 
+.background-dark{
+  background-color: $dark;
+}
+
+
 .primary-on-dark{
   color:#FFF;
+}
+
+.secondary-on-light{
+  color: $secondary-on-light;
 }

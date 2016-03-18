@@ -38,7 +38,7 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
            vm.loading = false;
             // Everything worked out so we can now redirect to
             // the users state to view the data
-            $state.go('tab.dash');
+            $state.go('app.messages');
 
             // Handle errors
         }, function(error) {

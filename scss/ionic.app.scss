@@ -6,16 +6,28 @@ For example, you might change some of the default colors:
 
 */
 $light:                           #fff !default;
-$stable:                          #f8f8f8 !default;
+$stable:                          #D8D8D8 !default;
 $positive:                        #3DC5F5 !default;
 $calm:                            #11c1f3 !default;
 $balanced:                        #33cd5f !default;
 $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
-$dark:                            #444 !default;
+$dark:                            #202E32 !default;
 
-$primary-on-dark: #FFF;
+
+
+$light-background-base : #000;
+$primary-on-light : transparentize($light-background-base, 1 - .87);
+$secondary-on-light : transparentize($light-background-base, 1 - .54);
+$disabled-on-light : transparentize($light-background-base, 1 - .38);
+$divider-on-light : transparentize($light-background-base, 1 - .12);
+
+$dark-background-base : #FFF;
+$primary-on-dark : $dark-background-base;
+$secondary-on-dark : transparentize($dark-background-base, 1 - .7);
+$disabled-on-dark : transparentize($dark-background-base, 1 - .3);
+$divider-on-dark : transparentize($dark-background-base, 1 - .12);
 
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
