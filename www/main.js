@@ -262,7 +262,7 @@ angular.module('starter.services', [])
 
 angular.module('auth').config(function($stateProvider, $authProvider, baseApiUrl) {
 
-    $authProvider.loginUrl = baseApiUrl + '/api/authenticate';
+    $authProvider.loginUrl = baseApiUrl + '/api/authenticate/account';
 
     $stateProvider.state('auth', {
         url: '/auth',
@@ -422,36 +422,6 @@ core.filter('initials', function () {
 
 //
 
-angular.module('app.messages')
-    .config(function($stateProvider) {
-        $stateProvider
-            .state('app.messages', {
-
-                url: '/messages',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'js/messages/messages.html'
-                    }
-                }
-            });
-
-    }); //
-(function () {
-    'use strict';
-    var module = angular.module('app.messages');
-    /* globals angular */
-    module.controller('MessagesController', MessagesController);
-
-
-    MessagesController.$inject = [];
-
-    function MessagesController($log) {
-        $log.log('here');
-    }
-
-
-})();
-
 angular.module('app.selectOrganization')
     .config(function($stateProvider) {
         $stateProvider
@@ -486,7 +456,8 @@ angular.module('app.selectOrganization')
                 confirmPopup.then(function(res) {
                     if(res) {
 
-                        organizationsResource.save(item._id).then(function(success){
+                        console.log(item);
+                        organizationsResource.requestInvite(item._id).then(function(success){
                             $log.log(success);
                             vm.pendingOrganizations.push(item);
                         },
@@ -499,7 +470,6 @@ angular.module('app.selectOrganization')
 
 
             };
-
 
             vm.clickedMethod = function (callback) {
 
@@ -525,6 +495,36 @@ angular.module('app.selectOrganization')
 
 
     });
+
+})();
+
+angular.module('app.messages')
+    .config(function($stateProvider) {
+        $stateProvider
+            .state('app.messages', {
+
+                url: '/messages',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'js/messages/messages.html'
+                    }
+                }
+            });
+
+    }); //
+(function () {
+    'use strict';
+    var module = angular.module('app.messages');
+    /* globals angular */
+    module.controller('MessagesController', MessagesController);
+
+
+    MessagesController.$inject = [];
+
+    function MessagesController($log) {
+        $log.log('here');
+    }
+
 
 })();
 (function () {
@@ -556,6 +556,11 @@ angular.module('app.selectOrganization')
             var resource = buildResource('/:_id/adduser');
             return resource.save({_id:organizationId},{userId: $rootScope.currentUser._id}).$promise;
         };
+        factory.requestInvite = function(organizationId) {
+            var resource = buildResource('/:_id/requestinvite');
+            return resource.save({_id:organizationId},{userId: $rootScope.currentUser._id}).$promise;
+        };
+
 
         return factory;
 

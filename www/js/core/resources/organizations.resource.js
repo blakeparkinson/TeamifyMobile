@@ -27,6 +27,11 @@
             var resource = buildResource('/:_id/adduser');
             return resource.save({_id:organizationId},{userId: $rootScope.currentUser._id}).$promise;
         };
+        factory.requestInvite = function(organizationId) {
+            var resource = buildResource('/:_id/requestinvite');
+            return resource.save({_id:organizationId},{userId: $rootScope.currentUser._id}).$promise;
+        };
+
 
         return factory;
 

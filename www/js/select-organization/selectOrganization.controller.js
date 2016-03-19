@@ -17,7 +17,8 @@
                 confirmPopup.then(function(res) {
                     if(res) {
 
-                        organizationsResource.save(item._id).then(function(success){
+                        console.log(item);
+                        organizationsResource.requestInvite(item._id).then(function(success){
                             $log.log(success);
                             vm.pendingOrganizations.push(item);
                         },
@@ -30,7 +31,6 @@
 
 
             };
-
 
             vm.clickedMethod = function (callback) {
 
