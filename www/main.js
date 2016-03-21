@@ -401,6 +401,112 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
     };
 
 });
+angular.module('auth').config(function($stateProvider) {
+
+    $stateProvider.state('auth.signup', {
+        url: '/signup',
+        views: {
+            "test": {
+                templateUrl: "js/auth/signup.html",
+                controller: 'SignupController as signup'
+            }
+        }
+    });
+
+});
+
+(function() {
+    'use strict';
+
+    angular
+        .module('auth')
+        .controller('SignupController', function SignupController($log, accountsResource, authenticate) {
+        /*jshint validthis: true */
+        var vm = this;
+
+            vm.user = {};
+
+            vm.doSignUp = function(){
+                //@tmf validate
+               accountsResource.create(vm.user).then(function(success){
+                    authenticate.login(success.email, success.password);
+                },
+               function(err){
+                   $log.log(err);
+               });
+            };
+
+    })
+})();
+
+
+(function () {
+    'use strict';
+
+    angular.module('app.core').factory(
+        'authenticate', function($auth, $rootScope, $log, $state) {
+
+
+        var factory = {};
+
+            factory.login = function(email, password){
+
+                var credentials = {
+                    email: email,
+                    password: password
+                };
+
+                $auth.login(credentials).then(
+                function (response) {
+                    // Return an $http request for the now authenticated
+                    // user so that we can flatten the promise chainf
+
+
+                    // Stringify the returned data to prepare it
+                    // to go into local storage
+                    var user = JSON.stringify(response.data.user);
+
+                    // Set the stringified user data into local storage
+                    localStorage.setItem('user', user);
+
+                    // The user's authenticated state gets flipped to
+                    // true so we can now show parts of the UI that rely
+                    // on the user being logged in
+                    $rootScope.authenticated = true;
+
+                    // Putting the user's data on $rootScope allows
+                    // us to access it anywhere across the app
+                    $rootScope.currentUser = response.data.user;
+
+
+                    // Everything worked out so we can now redirect to
+                    // the users state to view the data
+                    if (response.data.user.organizations.length > 0) {
+                        $rootScope.activeOrganization = response.data.user.organizations[0];
+                        $state.go('app.messages');
+                    } else {
+                        $state.go('app.selectOrganization');
+                    }
+
+
+                    // Handle errors
+                }, function (error) {
+
+                        //@tmf handle
+                   $log.log(error);
+
+                });
+
+
+            };
+
+
+
+        return factory;
+
+    });
+})();
+
 /* jshint ignore:start */
 
 
@@ -421,6 +527,36 @@ core.filter('initials', function () {
 });
 
 //
+
+angular.module('app.messages')
+    .config(function($stateProvider) {
+        $stateProvider
+            .state('app.messages', {
+
+                url: '/messages',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'js/messages/messages.html'
+                    }
+                }
+            });
+
+    }); //
+(function () {
+    'use strict';
+    var module = angular.module('app.messages');
+    /* globals angular */
+    module.controller('MessagesController', MessagesController);
+
+
+    MessagesController.$inject = [];
+
+    function MessagesController($log) {
+        $log.log('here');
+    }
+
+
+})();
 
 angular.module('app.selectOrganization')
     .config(function($stateProvider) {
@@ -497,36 +633,33 @@ angular.module('app.selectOrganization')
     });
 
 })();
-
-angular.module('app.messages')
-    .config(function($stateProvider) {
-        $stateProvider
-            .state('app.messages', {
-
-                url: '/messages',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'js/messages/messages.html'
-                    }
-                }
-            });
-
-    }); //
 (function () {
     'use strict';
-    var module = angular.module('app.messages');
-    /* globals angular */
-    module.controller('MessagesController', MessagesController);
 
+    angular.module('app.core').factory(
+        'accountsResource', function($resource, baseApiUrl) {
 
-    MessagesController.$inject = [];
+        var factory = {};
 
-    function MessagesController($log) {
-        $log.log('here');
-    }
+        function buildResource(subpath) {
+            return $resource(
+                baseApiUrl + '/api/accounts' + subpath, {}, {
+                    update: {
+                        method: 'PUT'
+                    }
+                });
+        }
 
+        factory.create = function(account){
+                           var resource = buildResource('');
+                           return resource.save({account: account}).$promise;
+                       };
 
+        return factory;
+
+    });
 })();
+
 (function () {
     'use strict';
 

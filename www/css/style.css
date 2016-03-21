@@ -9879,6 +9879,9 @@ input[type="search"] {
 .font-size-4 {
   font-size: 18px; }
 
+a {
+  text-decoration: none; }
+
 *::-webkit-input-placeholder {
   color: rgba(0, 0, 0, 0.38) !important;
   opacity: 0.5; }

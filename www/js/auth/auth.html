@@ -1,4 +1,5 @@
 <div class="background-positive stretch">
+    <div ui-view="test"></div>
     <input type="email">
     <div style="text-align:center; margin-top:50px; margin-left:auto; margin-right:auto; width:300px;" >
         <img src="img/logo.png" style="width:150px; margin-bottom:20px; height:auto;">
@@ -16,7 +17,7 @@
     </button>
     <div ng-if="auth.loginError" class="voffset2">We couldn't find that user.  Please Try again.</div>
         <div ng-click="auth.openModal()" class="center-block voffset4" style="color:#FFF; font-weight:bold; font-size:15px;">Forgot your password?</div>
-        <div class="center-block voffset8" style="color:#FFF;  font-size:15px;">Don't have an account? <b>Sign Up</b></div>
+        <div  class="center-block voffset8" style="color:#FFF;  font-size:15px;">Don't have an account? <a class="primary-on-dark" ui-sref="auth.signup"><b>Sign Up</b></a></div>
  <!--   <loading></loading> -->
 </div>
 </div>
