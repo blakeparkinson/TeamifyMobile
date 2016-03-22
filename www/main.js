@@ -507,36 +507,6 @@ core.filter('initials', function () {
 
 //
 
-angular.module('app.messages')
-    .config(function($stateProvider) {
-        $stateProvider
-            .state('app.messages', {
-
-                url: '/messages',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'js/messages/messages.html'
-                    }
-                }
-            });
-
-    }); //
-(function () {
-    'use strict';
-    var module = angular.module('app.messages');
-    /* globals angular */
-    module.controller('MessagesController', MessagesController);
-
-
-    MessagesController.$inject = [];
-
-    function MessagesController($log) {
-        $log.log('here');
-    }
-
-
-})();
-
 angular.module('app.selectOrganization')
     .config(function($stateProvider) {
         $stateProvider
@@ -620,6 +590,36 @@ angular.module('app.selectOrganization')
 
 
     });
+
+})();
+
+angular.module('app.messages')
+    .config(function($stateProvider) {
+        $stateProvider
+            .state('app.messages', {
+
+                url: '/messages',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'js/messages/messages.html'
+                    }
+                }
+            });
+
+    }); //
+(function () {
+    'use strict';
+    var module = angular.module('app.messages');
+    /* globals angular */
+    module.controller('MessagesController', MessagesController);
+
+
+    MessagesController.$inject = [];
+
+    function MessagesController($log) {
+        $log.log('here');
+    }
+
 
 })();
 angular.module('app.settings')
