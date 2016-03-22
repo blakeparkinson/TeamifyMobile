@@ -3,11 +3,20 @@
 
 
     angular.module('app.selectOrganization')
-        .controller('SelectOrganization', function MessagesController( $ionicBackdrop, $scope, $log, $http, baseApiUrl, $ionicPopup, $timeout, organizationsResource) {
+        .controller('SelectOrganization', function MessagesController(accountsResource, $ionicBackdrop, $scope, $log, $http, baseApiUrl, $ionicPopup, $timeout, organizationsResource) {
             var vm = this;
+
             vm.pendingOrganizations = [];
 
-            //get pending organizations
+
+            vm.getPendingOrganizations = function(){
+                accountsResource.pendingInvitations().then(function(response){
+
+                    vm.pendingOrganizations = response[0].invitation_requests;
+                });
+            };
+            vm.getPendingOrganizations();
+            //get pending organizations//
            $scope.showConfirm = function(item) {
 
                 var confirmPopup = $ionicPopup.confirm({

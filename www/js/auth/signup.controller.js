@@ -25,6 +25,8 @@
 
                 accountsResource.create(vm.form.user).then(function(success){
                  vm.loading = false;
+                        console.log(success.email);
+                        console.log(success.password);
                     authenticate.login(success.email, success.password);
                 },
 

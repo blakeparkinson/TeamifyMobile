@@ -10,10 +10,11 @@ angular.module('app.core',['ngAnimate', 'ngSanitize', 'satellizer', 'ngResource'
 
 angular.module('auth', []);
 angular.module('app.messages', []);
+angular.module('app.settings', []);
 angular.module('app.selectOrganization', []);
 angular.module('starter', ['ionic','ionic.service.core',
     'angularPromiseButtons', 'ladda', 'starter.controllers', 'starter.services', 'app.core', 'auth',
-'app.messages', 'app.selectOrganization', 'ion-autocomplete'])
+'app.messages', 'app.settings', 'app.selectOrganization', 'ion-autocomplete'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -101,7 +102,7 @@ angular.module('starter', ['ionic','ionic.service.core',
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/auth');
 
 })
     .run(function ($rootScope, $state) {
@@ -294,7 +295,7 @@ angular.module('auth').config(function($stateProvider, $authProvider, baseApiUrl
 
 
 angular.module('auth').controller('AuthController', function($scope, $auth, $state, $http,
-                                                             $ionicModal, $rootScope, usersResource) {
+                                                             $ionicModal, $rootScope, usersResource, authenticate) {
     var vm = this;
     vm.email = "";
     vm.password = "";
@@ -307,49 +308,8 @@ angular.module('auth').controller('AuthController', function($scope, $auth, $sta
             password: vm.password,
             name: vm.name
         };
+        authenticate.login(vm.email, vm.password);
 
-       $auth.login(credentials).then(function(response) {
-            // Return an $http request for the now authenticated
-            // user so that we can flatten the promise chainf
-
-
-            // Stringify the returned data to prepare it
-            // to go into local storage
-            var user = JSON.stringify(response.data.user);
-
-            // Set the stringified user data into local storage
-            localStorage.setItem('user', user);
-
-            // The user's authenticated state gets flipped to
-            // true so we can now show parts of the UI that rely
-            // on the user being logged in
-            $rootScope.authenticated = true;
-
-            // Putting the user's data on $rootScope allows
-            // us to access it anywhere across the app
-            $rootScope.currentUser = response.data.user;
-
-            vm.loading = false;
-            // Everything worked out so we can now redirect to
-            // the users state to view the data
-           if(response.data.user.organizations.length > 0){
-               $rootScope.activeOrganization = response.data.user.organizations[0];
-               $state.go('app.messages');
-           }
-           else{
-               $state.go('app.selectOrganization');
-           }
-
-
-
-            // Handle errors
-        }, function(error) {
-            vm.loading = false;
-            vm.loginError = true;
-            vm.loginErrorText = error.data.error;
-            // Because we returned the $http.get request in the $auth.login
-            // promise, we can chain the next promise to the end here
-        });
     };
 
     $ionicModal.fromTemplateUrl('forgotpassword.html', {
@@ -442,6 +402,8 @@ angular.module('auth').config(function($stateProvider) {
 
                 accountsResource.create(vm.form.user).then(function(success){
                  vm.loading = false;
+                        console.log(success.email);
+                        console.log(success.password);
                     authenticate.login(success.email, success.password);
                 },
 
@@ -457,83 +419,6 @@ angular.module('auth').config(function($stateProvider) {
 })();
 
 
-
-angular.module('app.selectOrganization')
-    .config(function($stateProvider) {
-        $stateProvider
-            .state('app.selectOrganization', {
-
-                url: '/selectorganization',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'js/select-organization/select.html',
-                        controller: 'SelectOrganization as selectOrganization'
-                    }
-                }
-            });
-
-    });
-(function () {
-    'use strict';
-
-
-    angular.module('app.selectOrganization')
-        .controller('SelectOrganization', function MessagesController( $ionicBackdrop, $scope, $log, $http, baseApiUrl, $ionicPopup, $timeout, organizationsResource) {
-            var vm = this;
-            vm.pendingOrganizations = [];
-
-            //get pending organizations
-           $scope.showConfirm = function(item) {
-
-                var confirmPopup = $ionicPopup.confirm({
-                    title: 'Request Invite?',
-                    template: 'Once the manager approves your request you will be added to this organization'
-                });
-               $ionicBackdrop.retain();
-                confirmPopup.then(function(res) {
-                    if(res) {
-
-                        console.log(item);
-                        organizationsResource.requestInvite(item._id).then(function(success){
-                            $log.log(success);
-                            vm.pendingOrganizations.push(item);
-                        },
-                        function(err){
-                            $log.error(err);
-                        })
-
-                    }
-                });
-
-
-            };
-
-            vm.clickedMethod = function (callback) {
-
-                $scope.showConfirm(callback.item);
-
-            }
-// inside your controller you can define the 'clickButton()' method the following way
-            vm.clickButton = function () {
-                var ionAutocompleteElement = document.getElementsByClassName("ion-autocomplete");
-                angular.element(ionAutocompleteElement).controller('ionAutocomplete').fetchSearchQuery("", true);
-                angular.element(ionAutocompleteElement).controller('ionAutocomplete').showModal();
-            }
-           vm.callbackMethod = function (query, isInitializing) {
-               if (isInitializing) {
-                   // depends on the configuration of the `items-method-value-key` (items) and the `item-value-key` (name) and `item-view-value-key` (name)
-                   return {items: []}
-               } else {
-                   return $http.get(baseApiUrl + '/api/organizations/search?name=' + query);
-               }
-           }
-
-
-
-
-    });
-
-})();
 (function () {
     'use strict';
 
@@ -560,18 +445,18 @@ angular.module('app.selectOrganization')
                     // to go into local storage
                     var user = JSON.stringify(response.data.user);
 
+                    console.log(response.data.user);
                     // Set the stringified user data into local storage
                     localStorage.setItem('user', user);
 
                     // The user's authenticated state gets flipped to
-                    // true so we can now show parts of the UI that rely
+                    //// true so we can now show parts of the UI that rely
                     // on the user being logged in
                     $rootScope.authenticated = true;
 
                     // Putting the user's data on $rootScope allows
                     // us to access it anywhere across the app
                     $rootScope.currentUser = response.data.user;
-
 
                     // Everything worked out so we can now redirect to
                     // the users state to view the data
@@ -651,11 +536,124 @@ angular.module('app.messages')
 
 
 })();
+
+angular.module('app.selectOrganization')
+    .config(function($stateProvider) {
+        $stateProvider
+            .state('app.selectOrganization', {
+
+                url: '/selectorganization',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'js/select-organization/select.html',
+                        controller: 'SelectOrganization as selectOrganization'
+                    }
+                }
+            });
+
+    });
+(function () {
+    'use strict';
+
+
+    angular.module('app.selectOrganization')
+        .controller('SelectOrganization', function MessagesController(accountsResource, $ionicBackdrop, $scope, $log, $http, baseApiUrl, $ionicPopup, $timeout, organizationsResource) {
+            var vm = this;
+
+            vm.pendingOrganizations = [];
+
+
+            vm.getPendingOrganizations = function(){
+                accountsResource.pendingInvitations().then(function(response){
+
+                    vm.pendingOrganizations = response[0].invitation_requests;
+                });
+            };
+            vm.getPendingOrganizations();
+            //get pending organizations//
+           $scope.showConfirm = function(item) {
+
+                var confirmPopup = $ionicPopup.confirm({
+                    title: 'Request Invite?',
+                    template: 'Once the manager approves your request you will be added to this organization'
+                });
+               $ionicBackdrop.retain();
+                confirmPopup.then(function(res) {
+                    if(res) {
+
+                        console.log(item);
+                        organizationsResource.requestInvite(item._id).then(function(success){
+                            $log.log(success);
+                            vm.pendingOrganizations.push(item);
+                        },
+                        function(err){
+                            $log.error(err);
+                        })
+
+                    }
+                });
+
+
+            };
+
+            vm.clickedMethod = function (callback) {
+
+                $scope.showConfirm(callback.item);
+
+            }
+// inside your controller you can define the 'clickButton()' method the following way
+            vm.clickButton = function () {
+                var ionAutocompleteElement = document.getElementsByClassName("ion-autocomplete");
+                angular.element(ionAutocompleteElement).controller('ionAutocomplete').fetchSearchQuery("", true);
+                angular.element(ionAutocompleteElement).controller('ionAutocomplete').showModal();
+            }
+           vm.callbackMethod = function (query, isInitializing) {
+               if (isInitializing) {
+                   // depends on the configuration of the `items-method-value-key` (items) and the `item-value-key` (name) and `item-view-value-key` (name)
+                   return {items: []}
+               } else {
+                   return $http.get(baseApiUrl + '/api/organizations/search?name=' + query);
+               }
+           }
+
+
+
+
+    });
+
+})();
+angular.module('app.settings')
+    .config(function($stateProvider) {
+        $stateProvider
+            .state('app.settings', {
+
+                url: '/settings',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'js/settings/settings.html'
+                    }
+                }
+            });
+
+    });
+
+(function () {
+
+    'use strict';
+    var module = angular.module('app.settings');
+
+    module.controller('SettingsController', function SettingsController($log) {
+        $log.log('here');
+    });
+
+
+})();
+
 (function () {
     'use strict';
 
     angular.module('app.core').factory(
-        'accountsResource', function($resource, baseApiUrl) {
+        'accountsResource', function($resource, baseApiUrl, $rootScope) {
 
         var factory = {};
 
@@ -672,6 +670,11 @@ angular.module('app.messages')
                            var resource = buildResource('');
                            return resource.save({account: account}).$promise;
                        };
+
+            factory.pendingInvitations = function(){
+                var resource = buildResource('/:_id/pendinginvitations');
+                return resource.query({_id:$rootScope.currentUser._id}).$promise;
+            };
 
         return factory;
 
@@ -711,6 +714,7 @@ angular.module('app.messages')
             var resource = buildResource('/:_id/requestinvite');
             return resource.save({_id:organizationId},{userId: $rootScope.currentUser._id}).$promise;
         };
+
 
 
         return factory;

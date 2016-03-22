@@ -10,10 +10,11 @@ angular.module('app.core',['ngAnimate', 'ngSanitize', 'satellizer', 'ngResource'
 
 angular.module('auth', []);
 angular.module('app.messages', []);
+angular.module('app.settings', []);
 angular.module('app.selectOrganization', []);
 angular.module('starter', ['ionic','ionic.service.core',
     'angularPromiseButtons', 'ladda', 'starter.controllers', 'starter.services', 'app.core', 'auth',
-'app.messages', 'app.selectOrganization', 'ion-autocomplete'])
+'app.messages', 'app.settings', 'app.selectOrganization', 'ion-autocomplete'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -101,7 +102,7 @@ angular.module('starter', ['ionic','ionic.service.core',
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/auth');
 
 })
     .run(function ($rootScope, $state) {

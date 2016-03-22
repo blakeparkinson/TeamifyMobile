@@ -20,16 +20,17 @@
 .list-dark{
   .item{
 
-    text-align:center;
+border:none;
+    font-size: 20px;
     color: $primary-on-dark;
-    border-color:#182C31;
+
     a{
       &.item-content{
         padding:15px;
         margin:5px;
       }
-      background-color : $dark;
+      background-color : transparent;
     }
-    background-color : $dark;
+    background-color : transparent;
   }
 }

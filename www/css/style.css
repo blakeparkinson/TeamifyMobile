@@ -9780,12 +9780,12 @@ input[type="search"] {
   background-color: #202E32; }
 
 .list-dark .item {
-  text-align: center;
+  border: none;
+  font-size: 20px;
   color: #FFF;
-  border-color: #182C31;
-  background-color: #202E32; }
+  background-color: transparent; }
   .list-dark .item a {
-    background-color: #202E32; }
+    background-color: transparent; }
     .list-dark .item a.item-content {
       padding: 15px;
       margin: 5px; }
@@ -9873,12 +9873,12 @@ input[type="search"] {
   background-color: #202E32; }
 
 .list-dark .item {
-  text-align: center;
+  border: none;
+  font-size: 20px;
   color: #FFF;
-  border-color: #182C31;
-  background-color: #202E32; }
+  background-color: transparent; }
   .list-dark .item a {
-    background-color: #202E32; }
+    background-color: transparent; }
     .list-dark .item a.item-content {
       padding: 15px;
       margin: 5px; }
@@ -9892,6 +9892,18 @@ input[type="search"] {
   .sidebar .item-input.on-dark {
     color: #FFF;
     border-bottom: 1px solid #FFF; }
+
+.sidebar-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: #3D7AF5;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  text-align: center;
+  padding-top: 12px;
+  font-size: 16px;
+  bottom: 0px; }
 
 .font-size-2 {
   font-size: 14px; }

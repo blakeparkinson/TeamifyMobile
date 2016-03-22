@@ -11,3 +11,16 @@
     }
   }
 }
+
+.sidebar-footer {
+  border-top: 1px solid $disabled-on-dark;
+  background-color: $positive;
+  position:absolute;
+  left:0px;
+  right:0px;
+  top:0px;
+  text-align: center;
+  padding-top:12px;
+  font-size:16px;
+  bottom: 0px;
+}
