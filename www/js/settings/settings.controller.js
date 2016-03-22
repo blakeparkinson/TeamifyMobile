@@ -5,11 +5,13 @@
     var module = angular.module('app.settings');
 
     module.controller('SettingsController', function SettingsController($log, deployChannel, $scope) {
+        console.log('here');
         var deploy = new Ionic.Deploy();
         deploy.setChannel(deployChannel);
 
         // Update app code with new release from Ionic Deploy
         $scope.doUpdate = function() {
+            console.log('here');
             deploy.update().then(function(res) {
                 console.log('Ionic Deploy: Update Success! ', res);
             }, function(err) {

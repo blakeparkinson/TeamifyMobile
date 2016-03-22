@@ -6,7 +6,8 @@ angular.module('app.settings')
                 url: '/settings',
                 views: {
                     'menuContent': {
-                        templateUrl: 'js/settings/settings.html'
+                        templateUrl: 'js/settings/settings.html',
+                        controller: 'SettingsController as settings'
                     }
                 }
             });

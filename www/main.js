@@ -261,6 +261,94 @@ angular.module('starter.services', [])
   };
 });
 
+(function () {
+    'use strict';
+
+    angular.module('app.core').factory(
+        'authenticate', function($auth, $rootScope, $log, $state) {
+
+
+        var factory = {};
+
+            factory.login = function(email, password){
+
+                var credentials = {
+                    email: email,
+                    password: password
+                };
+
+                $auth.login(credentials).then(
+                function (response) {
+                    // Return an $http request for the now authenticated
+                    // user so that we can flatten the promise chainf
+
+
+                    // Stringify the returned data to prepare it
+                    // to go into local storage
+                    var user = JSON.stringify(response.data.user);
+
+                    console.log(response.data.user);
+                    // Set the stringified user data into local storage
+                    localStorage.setItem('user', user);
+
+                    // The user's authenticated state gets flipped to
+                    //// true so we can now show parts of the UI that rely
+                    // on the user being logged in
+                    $rootScope.authenticated = true;
+
+                    // Putting the user's data on $rootScope allows
+                    // us to access it anywhere across the app
+                    $rootScope.currentUser = response.data.user;
+
+                    // Everything worked out so we can now redirect to
+                    // the users state to view the data
+                    if (response.data.user.organizations.length > 0) {
+                        $rootScope.activeOrganization = response.data.user.organizations[0];
+                        $state.go('app.messages');
+                    } else {
+                        $state.go('app.selectOrganization');
+                    }
+
+
+                    // Handle errors
+                }, function (error) {
+
+                        //@tmf handle
+                   $log.log(error);
+
+                });
+
+
+            };
+
+
+
+        return factory;
+
+    });
+})();
+
+/* jshint ignore:start */
+
+
+angular.module('app.core')
+.
+constant('baseApiUrl', 'http://teamify-development.herokuapp.com').constant('deployChannel', 'dev');
+
+
+/* jshint ignore:end */
+var core = angular.module('app.core');
+
+
+
+core.filter('initials', function () {
+    return function (user) {
+        var str = user.name.first.charAt(0) + user.name.last.charAt(0);
+        return str.toUpperCase();
+    };
+});
+
+//
 angular.module('auth').config(function($stateProvider, $authProvider, baseApiUrl) {
 
     $authProvider.loginUrl = baseApiUrl + '/api/authenticate/account';
@@ -419,94 +507,6 @@ angular.module('auth').config(function($stateProvider) {
 })();
 
 
-(function () {
-    'use strict';
-
-    angular.module('app.core').factory(
-        'authenticate', function($auth, $rootScope, $log, $state) {
-
-
-        var factory = {};
-
-            factory.login = function(email, password){
-
-                var credentials = {
-                    email: email,
-                    password: password
-                };
-
-                $auth.login(credentials).then(
-                function (response) {
-                    // Return an $http request for the now authenticated
-                    // user so that we can flatten the promise chainf
-
-
-                    // Stringify the returned data to prepare it
-                    // to go into local storage
-                    var user = JSON.stringify(response.data.user);
-
-                    console.log(response.data.user);
-                    // Set the stringified user data into local storage
-                    localStorage.setItem('user', user);
-
-                    // The user's authenticated state gets flipped to
-                    //// true so we can now show parts of the UI that rely
-                    // on the user being logged in
-                    $rootScope.authenticated = true;
-
-                    // Putting the user's data on $rootScope allows
-                    // us to access it anywhere across the app
-                    $rootScope.currentUser = response.data.user;
-
-                    // Everything worked out so we can now redirect to
-                    // the users state to view the data
-                    if (response.data.user.organizations.length > 0) {
-                        $rootScope.activeOrganization = response.data.user.organizations[0];
-                        $state.go('app.messages');
-                    } else {
-                        $state.go('app.selectOrganization');
-                    }
-
-
-                    // Handle errors
-                }, function (error) {
-
-                        //@tmf handle
-                   $log.log(error);
-
-                });
-
-
-            };
-
-
-
-        return factory;
-
-    });
-})();
-
-/* jshint ignore:start */
-
-
-angular.module('app.core')
-.
-constant('baseApiUrl', 'http://teamify-development.herokuapp.com').constant('deployChannel', 'dev');
-
-
-/* jshint ignore:end */
-var core = angular.module('app.core');
-
-
-
-core.filter('initials', function () {
-    return function (user) {
-        var str = user.name.first.charAt(0) + user.name.last.charAt(0);
-        return str.toUpperCase();
-    };
-});
-
-//
 
 angular.module('app.messages')
     .config(function($stateProvider) {
@@ -631,7 +631,8 @@ angular.module('app.settings')
                 url: '/settings',
                 views: {
                     'menuContent': {
-                        templateUrl: 'js/settings/settings.html'
+                        templateUrl: 'js/settings/settings.html',
+                        controller: 'SettingsController as settings'
                     }
                 }
             });
@@ -644,11 +645,13 @@ angular.module('app.settings')
     var module = angular.module('app.settings');
 
     module.controller('SettingsController', function SettingsController($log, deployChannel, $scope) {
+        console.log('here');
         var deploy = new Ionic.Deploy();
         deploy.setChannel(deployChannel);
 
         // Update app code with new release from Ionic Deploy
         $scope.doUpdate = function() {
+            console.log('here');
             deploy.update().then(function(res) {
                 console.log('Ionic Deploy: Update Success! ', res);
             }, function(err) {
