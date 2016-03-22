@@ -1,0 +1,26 @@
+.sidebar {
+  & .item-input {
+    margin-top       : 20px;
+    background-color : transparent;
+    border           : none;
+    padding-left     : 5px;
+    padding-right    : 5px;
+    &.on-dark {
+      color         : #FFF;
+      border-bottom : 1px solid #FFF;
+    }
+  }
+}
+
+.sidebar-footer {
+  border-top: 1px solid $disabled-on-dark;
+  background-color: $positive;
+  position:absolute;
+  left:0px;
+  right:0px;
+  top:0px;
+  text-align: center;
+  padding-top:12px;
+  font-size:16px;
+  bottom: 0px;
+}

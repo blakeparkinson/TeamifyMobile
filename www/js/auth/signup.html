@@ -1,0 +1,52 @@
+<ion-modal-view class="background-positive stretch">
+    <ion-header-bar class="bar bar-header bar-positive">
+        <button ui-sref="auth" class="button button-clear">Close</button>
+        <h1 class="title">Sign Up</h1>
+    </ion-header-bar>
+    <ion-content class="primary-on-dark">
+        <div class="center-block" style="width:300px;">
+
+
+            <img src="img/avatar.png" class="voffset4" style="width:50px; height:auto">
+
+            <form id="signupForm" name="signup.form" novalidate>
+
+            <label class="item item-input on-dark voffset7">
+                <input id="firstName" name="firstName" class="on-dark" ng-model="signup.form.user.name.first" type="text"
+                       placeholder="First Name" style="text-align:center" required>
+            </label>
+
+            <label class="item item-input on-dark voffset7">
+                <input class="on-dark" ng-model="signup.form.user.name.last" type="text"
+                       placeholder="Last Name" style="text-align:center">
+            </label>
+
+
+            <label class="item item-input on-dark voffset7">
+                <input class="on-dark" ng-model="signup.form.user.email" type="text" placeholder="Email"
+                       style="text-align:center">
+            </label>
+
+            <label class="item item-input on-dark voffset7">
+                <input class="on-dark" ng-model="signup.form.user.password" type="password" placeholder="Password"
+                       style="text-align:center">
+            </label>
+                <div class="voffset3 assertive" ng-if="signup.loginError">{{signup.loginError}}</div>
+
+            <div class=" voffset5">
+
+
+                <button ng-disabled="signup.loading"
+                        class="button button-block button-white ladda-button"
+                        data-spinner-color="#FFF" ladda-button="signup.loading"
+                        data-style="slide-down" data-spinner-size="25"
+                        ng-click="signup.doSignUp()" shake-me><span class="ladda-label">Sign Up!</span>
+                </button>
+
+            </div>
+                </form>
+        </div>
+
+
+    </ion-content>
+</ion-modal-view>

@@ -1,24 +1,27 @@
 
 .button{
+  &.button-large {
+    border-radius : 25px;
+    height        : 50px;
+  }
+  &.button-white {
+    background-color : #FFF;
+    color            : $positive !important;
+  }
+  &.button-clear-on-dark {
+    background-color : transparent;
+    border           : 1px solid $primary-on-dark;
+    color            : $primary-on-dark;
+  }
+&.button-round {
+  border-radius  : 20px;
+  letter-spacing : 1px;
+  font-weight    : 400;
+  font-size      : 15px;
+  height         : 40px;
+  padding-left:20px;
+  padding-right:20px;
 
-  border-radius:25px;
-  letter-spacing:1px;
-  font-weight:400;
-  font-size:15px;
-  height:50px;
-  &.button-large{
-    border-radius: 30px;
-    height:60px;
-  }
-  &.button-white{
-    background-color: #FFF;
-    color: $positive !important;
-  }
-  &.button-clear-on-dark{
-    background-color: transparent;
-    border: 1px solid $primary-on-dark;
-    color: $primary-on-dark;
-  }
-
+}
 
 }

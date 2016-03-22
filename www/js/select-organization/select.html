@@ -1,0 +1,56 @@
+<ion-view view-title="Select Organization" >
+    <ion-nav-buttons side="right">
+        <button class="button button-clear ion-search" ng-click="selectOrganization.clickButton()"></button>
+    </ion-nav-buttons>
+<div ng-controller="SelectOrganization as selectOrganization">
+    <ion-content>
+
+        <div class="list">
+            <a class="item item-icon-right" ng-repeat="organization in currentUser.organizations">
+                 {{organization.name}}
+                <i ng-if="organization._id == activeOrganization._id" class="icon ion-ios-checkmark-empty"></i>
+            </a>
+
+            <div ng-if="selectOrganization.pendingOrganizations.length">
+                <div class="item item-divider">
+                    Pending Requests
+                </div>
+
+                <a class="item"  ng-repeat="organization in selectOrganization.pendingOrganizations">
+                    {{organization.name}}
+                </a>
+            </div>
+        </div>
+
+        <div style="display:none;">
+
+                <input manage-externally="true" template-url="js/templates/autocomplete.html"  ion-autocomplete type="text" readonly="readonly" class="ion-autocomplete"
+                       autocomplete="on" max-selected-items="1"  ng-model="model" items-clicked-method="selectOrganization.clickedMethod(callback)"  item-view-value-key="name"  items-method="selectOrganization.callbackMethod(query)" />
+
+
+        </div>
+
+
+        <div ng-if="!currentUser.organizations.length">
+            <div ng-if="!selectOrganization.pendingOrganizations.length">
+        <div class="center-block center-text">
+           <img src="img/emptyOrganization.png" class="voffset8" style="width:320px;">
+</div>
+    </div></div>
+
+
+    </ion-content>
+</div>
+</ion-view>
+
+<script id="confirmJoinOrganization.html" type="text/ng-template">
+    <ion-popover-view>
+        <ion-header-bar>
+            <h1 class="title">My Popover Title</h1>
+        </ion-header-bar>
+        <ion-content>
+            Hello!
+        </ion-content>
+    </ion-popover-view>
+</script>
+

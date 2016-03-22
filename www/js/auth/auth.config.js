@@ -1,6 +1,6 @@
 angular.module('auth').config(function($stateProvider, $authProvider, baseApiUrl) {
 
-    $authProvider.loginUrl = baseApiUrl + '/api/authenticate';
+    $authProvider.loginUrl = baseApiUrl + '/api/authenticate/account';
 
     $stateProvider.state('auth', {
         url: '/auth',

@@ -1,24 +1,75 @@
+@mixin input-placeholder($color) {
+  &::-webkit-input-placeholder {
+    color : $color;
+  }
+  &:-moz-placeholder {
+    color : $color;
+  }
+  &::-moz-placeholder {
+    color : $color;
+  }
+  &:-ms-input-placeholder {
+    color : $color;
+  }
+}
 @import 'app/colors',
 'app/form',
 'app/item',
 'app/button',
-'app/util';
+'app/util',
+'app/item',
+'app/sidebar',
+'app/type';
 
 
-.font-size-3{
-  font-size:16px;
+@keyframes shake {
+  0% {transform: translateX(0);}
+  12.5% {transform: translateX(-6px) rotateY(-5deg)}
+  37.5% {transform: translateX(5px) rotateY(4deg)}
+  62.5% {transform: translateX(-3px) rotateY(-2deg)}
+  87.5% {transform: translateX(2px) rotateY(1deg)}
+  100% {transform: translateX(0)}
 }
-//Set placeholder color
-*::-webkit-input-placeholder {
-  color: #FFF !important;
-  opacity: 0.5;
+
+@-webkit-keyframes shake {
+  0% {-webkit-transform: translateX(0);}
+  12.5% {-webkit-transform: translateX(-6px) rotateY(-5deg)}
+  37.5% {-webkit-transform: translateX(5px) rotateY(4deg)}
+  62.5% {-webkit-transform: translateX(-3px) rotateY(-2deg)}
+  87.5% {-webkit-transform: translateX(2px) rotateY(1deg)}
+  100% {-webkit-transform: translateX(0)}
 }
-*::-moz-placeholder {
-  color: #FFF !important;
-  opacity: 0.5;
+
+.shake {
+  -webkit-animation: shake 400ms ease-in-out;
+  animation: shake 400ms ease-in-out;
 }
-*:-ms-input-placeholder { /* IE10+ */
-  color: #FFF !important;
-  opacity: 0.5;
+
+  body{
+    color: $primary-on-light;
+  }
+
+.avatar {
+  background-color : #000;
+  opacity: 0.35;
+  color:#FFF;
+  width            : 40px;
+  height           : 40px;
+  text-align       : center;
+  line-height      : 40px;
+  border-radius    : 20px;
+  font-size        : 16px;
+  font-weight      : 300;
+
+  &.avatar-large{
+    width:70px;
+
+    padding-top:17px;
+    height:70px;
+    border-radius:35px;
+    font-size:26px;
+
+  }
 }
+
 

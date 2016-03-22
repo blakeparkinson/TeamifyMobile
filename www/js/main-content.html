@@ -1,0 +1,69 @@
+<ion-side-menus id="sideMenu" enable-menu-with-back-views="false">
+    <ion-side-menu-content>
+        <ion-nav-bar style="background: #FFF;">
+            <ion-nav-back-button>
+            </ion-nav-back-button>
+
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+                </button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="menuContent"></ion-nav-view>
+    </ion-side-menu-content>
+
+    <ion-side-menu side="left">
+
+
+        <ion-content class="background-positive">
+
+            <div class="sidebar">
+
+                <div class="user"></div>
+                <i menu-close ui-sref="app.settings" class="icon ion-android-settings font-size-5 primary-on-dark"
+                   style="position:absolute;  top:0px; right:20px; "></i>
+
+                <div class="avatar avatar-large voffset4 center-block">
+                    {{currentUser | initials}}
+
+                </div>
+                <div class="center-block center voffset3 primary-on-dark font-size-5">{{currentUser.name.full}}</div>
+                <div class="voffset4"></div>
+                <div ng-if="!currentUser.organizations.length">
+                    <div class="voffset8 center-block center-text primary-on-dark font-size-3">You do not belong to any
+                        organizations
+                    </div>
+                    <button menu-close class="center-block voffset4 button button-round button-white"
+                            ui-sref="app.selectOrganization">add organization
+                    </button>
+                </div>
+                <div ng-show="currentUser.organizations.length">
+
+
+                    <ion-list class="list list-dark">
+                        <ion-item menu-close ui-sref="app.messages">
+                            Messages
+                            <span class="badge badge-assertive">{{app.unreadMessagesCount}}</span>
+                        </ion-item>
+
+                    </ion-list>
+                </div>
+            </div>
+
+            </div>
+            </div>
+        </ion-content>
+
+        <ion-footer-bar ng-show="currentUser.organizations.length" align-title="center" class="bar-positive">
+            <button class="button button-clear"><i class="icon ion-location"></i></button>
+            <div class="sidebar-footer">
+
+                <a menu-close ui-sref="app.selectOrganization" style="color:#FFF;">
+                    {{activeOrganization.name}}
+                </a>
+
+        </ion-footer-bar>
+        </div>
+
+    </ion-side-menu>
+</ion-side-menus>
