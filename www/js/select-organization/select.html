@@ -1,6 +1,6 @@
 <ion-view view-title="Select Organization" >
     <ion-nav-buttons side="right">
-        <button class="button ion-plus" ng-click="selectOrganization.clickButton()"></button>
+        <button class="button button-clear ion-search" ng-click="selectOrganization.clickButton()"></button>
     </ion-nav-buttons>
 <div ng-controller="SelectOrganization as selectOrganization">
     <ion-content>
@@ -32,13 +32,10 @@
 
 
         <div ng-if="!currentUser.organizations.length">
-
+            <div ng-if="!selectOrganization.pendingOrganizations.length">
         <div class="center-block center-text">
-            <div class="voffset5 font-size-3"> You do not yet belong to any organizations</div>
-            <img src="img/organization.png" class="voffset5" style="width:60px; height:auto;">
-            <div class="font-size-1 voffset4 secondary-on-light ">Search for your company and send an invitation request,
-                or give the manager the email you used to sign up.</div>
-
+           <img src="img/emptyOrganization.png" class="voffset8" style="width:320px;">
+</div>
     </div></div>
 
 

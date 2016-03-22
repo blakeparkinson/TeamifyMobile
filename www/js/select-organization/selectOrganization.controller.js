@@ -7,6 +7,7 @@
             var vm = this;
             vm.pendingOrganizations = [];
 
+            //get pending organizations
            $scope.showConfirm = function(item) {
 
                 var confirmPopup = $ionicPopup.confirm({

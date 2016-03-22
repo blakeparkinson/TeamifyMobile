@@ -3,22 +3,39 @@
 
     angular
         .module('auth')
-        .controller('SignupController', function SignupController($log, accountsResource, authenticate) {
+        .controller('SignupController', function SignupController($animate, $log, $scope, accountsResource, authenticate) {
         /*jshint validthis: true */
         var vm = this;
 
-            vm.user = {};
 
+
+            vm.loading = false;
             vm.doSignUp = function(){
-                //@tmf validate
-               accountsResource.create(vm.user).then(function(success){
+
+
+                if (vm.form.$invalid) {
+                    var element = angular.element(document.getElementById('signupForm'));
+                    $animate.addClass(element, 'shake').then(function() {
+                        element.removeClass('shake');
+                    });
+                        return;
+                    }
+
+                vm.loading = true;
+
+                accountsResource.create(vm.form.user).then(function(success){
+                 vm.loading = false;
                     authenticate.login(success.email, success.password);
                 },
+
                function(err){
+                   vm.loading = false;
+                   vm.loginError = "An account with this email already exists!";
                    $log.log(err);
                });
+
             };
 
-    })
+    });
 })();
 

@@ -42,8 +42,8 @@
         };
 
         factory.getUsers = function () {
-            var resource = buildResource('');
-            return resource.query({}).$promise;
+
+
         };
 
         factory.create = function (user) {

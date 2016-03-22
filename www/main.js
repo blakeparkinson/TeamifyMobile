@@ -420,26 +420,120 @@ angular.module('auth').config(function($stateProvider) {
 
     angular
         .module('auth')
-        .controller('SignupController', function SignupController($log, accountsResource, authenticate) {
+        .controller('SignupController', function SignupController($animate, $log, $scope, accountsResource, authenticate) {
         /*jshint validthis: true */
         var vm = this;
 
-            vm.user = {};
 
+
+            vm.loading = false;
             vm.doSignUp = function(){
-                //@tmf validate
-               accountsResource.create(vm.user).then(function(success){
+
+
+                if (vm.form.$invalid) {
+                    var element = angular.element(document.getElementById('signupForm'));
+                    $animate.addClass(element, 'shake').then(function() {
+                        element.removeClass('shake');
+                    });
+                        return;
+                    }
+
+                vm.loading = true;
+
+                accountsResource.create(vm.form.user).then(function(success){
+                 vm.loading = false;
                     authenticate.login(success.email, success.password);
                 },
+
                function(err){
+                   vm.loading = false;
+                   vm.loginError = "An account with this email already exists!";
                    $log.log(err);
                });
+
             };
 
-    })
+    });
 })();
 
 
+
+angular.module('app.selectOrganization')
+    .config(function($stateProvider) {
+        $stateProvider
+            .state('app.selectOrganization', {
+
+                url: '/selectorganization',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'js/select-organization/select.html',
+                        controller: 'SelectOrganization as selectOrganization'
+                    }
+                }
+            });
+
+    });
+(function () {
+    'use strict';
+
+
+    angular.module('app.selectOrganization')
+        .controller('SelectOrganization', function MessagesController( $ionicBackdrop, $scope, $log, $http, baseApiUrl, $ionicPopup, $timeout, organizationsResource) {
+            var vm = this;
+            vm.pendingOrganizations = [];
+
+            //get pending organizations
+           $scope.showConfirm = function(item) {
+
+                var confirmPopup = $ionicPopup.confirm({
+                    title: 'Request Invite?',
+                    template: 'Once the manager approves your request you will be added to this organization'
+                });
+               $ionicBackdrop.retain();
+                confirmPopup.then(function(res) {
+                    if(res) {
+
+                        console.log(item);
+                        organizationsResource.requestInvite(item._id).then(function(success){
+                            $log.log(success);
+                            vm.pendingOrganizations.push(item);
+                        },
+                        function(err){
+                            $log.error(err);
+                        })
+
+                    }
+                });
+
+
+            };
+
+            vm.clickedMethod = function (callback) {
+
+                $scope.showConfirm(callback.item);
+
+            }
+// inside your controller you can define the 'clickButton()' method the following way
+            vm.clickButton = function () {
+                var ionAutocompleteElement = document.getElementsByClassName("ion-autocomplete");
+                angular.element(ionAutocompleteElement).controller('ionAutocomplete').fetchSearchQuery("", true);
+                angular.element(ionAutocompleteElement).controller('ionAutocomplete').showModal();
+            }
+           vm.callbackMethod = function (query, isInitializing) {
+               if (isInitializing) {
+                   // depends on the configuration of the `items-method-value-key` (items) and the `item-value-key` (name) and `item-view-value-key` (name)
+                   return {items: []}
+               } else {
+                   return $http.get(baseApiUrl + '/api/organizations/search?name=' + query);
+               }
+           }
+
+
+
+
+    });
+
+})();
 (function () {
     'use strict';
 
@@ -557,82 +651,6 @@ angular.module('app.messages')
 
 
 })();
-
-angular.module('app.selectOrganization')
-    .config(function($stateProvider) {
-        $stateProvider
-            .state('app.selectOrganization', {
-
-                url: '/selectorganization',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'js/select-organization/select.html',
-                        controller: 'SelectOrganization as selectOrganization'
-                    }
-                }
-            });
-
-    });
-(function () {
-    'use strict';
-
-
-    angular.module('app.selectOrganization')
-        .controller('SelectOrganization', function MessagesController( $ionicBackdrop, $scope, $log, $http, baseApiUrl, $ionicPopup, $timeout, organizationsResource) {
-            var vm = this;
-            vm.pendingOrganizations = [];
-
-           $scope.showConfirm = function(item) {
-
-                var confirmPopup = $ionicPopup.confirm({
-                    title: 'Request Invite?',
-                    template: 'Once the manager approves your request you will be added to this organization'
-                });
-               $ionicBackdrop.retain();
-                confirmPopup.then(function(res) {
-                    if(res) {
-
-                        console.log(item);
-                        organizationsResource.requestInvite(item._id).then(function(success){
-                            $log.log(success);
-                            vm.pendingOrganizations.push(item);
-                        },
-                        function(err){
-                            $log.error(err);
-                        })
-
-                    }
-                });
-
-
-            };
-
-            vm.clickedMethod = function (callback) {
-
-                $scope.showConfirm(callback.item);
-
-            }
-// inside your controller you can define the 'clickButton()' method the following way
-            vm.clickButton = function () {
-                var ionAutocompleteElement = document.getElementsByClassName("ion-autocomplete");
-                angular.element(ionAutocompleteElement).controller('ionAutocomplete').fetchSearchQuery("", true);
-                angular.element(ionAutocompleteElement).controller('ionAutocomplete').showModal();
-            }
-           vm.callbackMethod = function (query, isInitializing) {
-               if (isInitializing) {
-                   // depends on the configuration of the `items-method-value-key` (items) and the `item-value-key` (name) and `item-view-value-key` (name)
-                   return {items: []}
-               } else {
-                   return $http.get(baseApiUrl + '/api/organizations/search?name=' + query);
-               }
-           }
-
-
-
-
-    });
-
-})();
 (function () {
     'use strict';
 
@@ -744,8 +762,8 @@ angular.module('app.selectOrganization')
         };
 
         factory.getUsers = function () {
-            var resource = buildResource('');
-            return resource.query({}).$promise;
+
+
         };
 
         factory.create = function (user) {

@@ -9,39 +9,42 @@
 
             <img src="img/avatar.png" class="voffset4" style="width:50px; height:auto">
 
+            <form id="signupForm" name="signup.form" novalidate>
 
             <label class="item item-input on-dark voffset7">
-                <input class="on-dark" ng-model="signup.user.name.first" type="text"
-                       placeholder="First Name" style="text-align:center">
+                <input id="firstName" name="firstName" class="on-dark" ng-model="signup.form.user.name.first" type="text"
+                       placeholder="First Name" style="text-align:center" required>
             </label>
 
             <label class="item item-input on-dark voffset7">
-                <input class="on-dark" ng-model="signup.user.name.last" type="text"
+                <input class="on-dark" ng-model="signup.form.user.name.last" type="text"
                        placeholder="Last Name" style="text-align:center">
             </label>
 
 
             <label class="item item-input on-dark voffset7">
-                <input class="on-dark" ng-model="signup.user.email" type="text" placeholder="Email"
+                <input class="on-dark" ng-model="signup.form.user.email" type="text" placeholder="Email"
                        style="text-align:center">
             </label>
 
             <label class="item item-input on-dark voffset7">
-                <input class="on-dark" ng-model="signup.user.password" type="password" placeholder="Password"
+                <input class="on-dark" ng-model="signup.form.user.password" type="password" placeholder="Password"
                        style="text-align:center">
             </label>
+                <div class="voffset3 assertive" ng-if="signup.loginError">{{signup.loginError}}</div>
 
             <div class=" voffset5">
 
 
-                <button ng-disabled="auth.loadingEmail"
-                        class="ladda-button button button-block button-clear-on-dark"
-                        data-spinner-color="#FFF" ladda-button="auth.loadingEmail"
+                <button ng-disabled="signup.loading"
+                        class="button button-block button-white ladda-button"
+                        data-spinner-color="#FFF" ladda-button="signup.loading"
                         data-style="slide-down" data-spinner-size="25"
-                        ng-click="signup.doSignUp()"><span class="ladda-label">Sign Up!</span>
+                        ng-click="signup.doSignUp()" shake-me><span class="ladda-label">Sign Up!</span>
                 </button>
 
             </div>
+                </form>
         </div>
 
 

@@ -2,10 +2,13 @@ input[type="text"],
 input[type="password"],
 input[type="email"],
 input[type="search"]{
+text-align:center;
  background-color:transparent !important;
   &.on-dark{
     color: #FFF;
+    @include input-placeholder($secondary-on-dark);
   }
+
 
 }
 
