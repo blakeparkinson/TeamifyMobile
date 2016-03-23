@@ -533,7 +533,7 @@ angular.module('auth').config(function($stateProvider) {
 
 
 angular.module('app.core')
-.constant('baseApiUrl', 'http://teamify-development.herokuapp.com').constant('deployChannel', 'dev');
+    .constant('baseApiUrl', 'http://localhost:7203').constant('deployChannel', 'N/A');
 
 
 /* jshint ignore:end */
@@ -545,6 +545,12 @@ core.filter('initials', function () {
     return function (user) {
         var str = user.name.first.charAt(0) + user.name.last.charAt(0);
         return str.toUpperCase();
+    };
+});
+
+core.filter('moment_dateMedium', function () {
+    return function (input) {
+        return moment(input).format('ddd, MMM Do YYYY');
     };
 });
 
@@ -599,27 +605,50 @@ angular.module('app.sales')
     'use strict';
     var module = angular.module('app.sales');
     /* globals angular */
-    module.controller('SalesController',function SalesController($log, ionicDatePicker, $scope) {
-var vm = this;
+    module.controller('SalesController',function SalesController($log, organizationsResource, ionicDatePicker, $scope, $ionicPopup) {
+    var vm = this;
+    vm.singleDayMode = true;
+
+        vm.dateOverlap = function(){
+                var confirmPopup = $ionicPopup.alert({
+                    title: 'Date Overlap',
+                    template: 'Start date and end date must not overlap!'
+                });
+
+                confirmPopup.then(function(res) {
+                    if(res) {
+
+                    }
+                });
+            };
+
+
+        vm.date = {
+            from: moment(),
+            to: moment()
+        };
         var ipObj1 = {
-            callback: function (val) {  //Mandatory
-                console.log('Return value from the datepicker popup is : ' + val, new Date(val));
+            callback: function (val) {
+                var m = moment(val);
+                if(m.isAfter(vm.date.to, 'day')){
+                    vm.dateOverlap();
+                    return;
+                }
+                if(m.isSame(vm.date.to,'day')){
+                    vm.singleDayMode = true;
+                }
+                else{
+                    vm.singleDayMode = false;
+                }
+                vm.date.from = moment(val);
+
+
+               // console.log('Return value from the datepicker popup is : ' + val, new Date(val));
             },
-            disabledDates: [            //Optional
-                new Date(2016, 2, 16),
-                new Date(2015, 3, 16),
-                new Date(2015, 4, 16),
-                new Date(2015, 5, 16),
-                new Date('Wednesday, August 12, 2015'),
-                new Date("08-16-2016"),
-                new Date(1439676000000)
-            ],
-            from: new Date(2012, 1, 1), //Optional
-            to: new Date(2016, 10, 30), //Optional
-            inputDate: new Date(),      //Optional
-            mondayFirst: true,          //Optional
-            disableWeekdays: [0],       //Optional
-            closeOnSelect: false,       //Optional
+
+            closeLabel: 'Cancel',
+            mondayFirst: false,
+            closeOnSelect: true,       //Optional
             templateType: 'popup'       //Optional
         };
 
@@ -630,29 +659,40 @@ var vm = this;
 
         var ipObj2 = {
             callback: function (val) {  //Mandatory
-                console.log('Return value from the datepicker popup is : ' + val, new Date(val));
+
+
+                var m = moment(val);
+                if(m.isBefore(vm.date.from, 'day')){
+                    vm.dateOverlap();
+                    return;
+                }
+                if(m.isSame(vm.date.to,'day')){
+                    vm.singleDayMode = true;
+                }
+                else{
+                    vm.singleDayMode = false;
+                }
+                vm.date.to =  moment(val);
+                fetchSales();
+
             },
-            disabledDates: [            //Optional
-                new Date(2016, 2, 16),
-                new Date(2015, 3, 16),
-                new Date(2015, 4, 16),
-                new Date(2015, 5, 16),
-                new Date('Wednesday, August 12, 2015'),
-                new Date("08-16-2016"),
-                new Date(1439676000000)
-            ],
-            from: new Date(2012, 1, 1), //Optional
-            to: new Date(2016, 10, 30), //Optional
-            inputDate: new Date(),      //Optional
-            mondayFirst: true,          //Optional
-            disableWeekdays: [0],       //Optional
-            closeOnSelect: false,       //Optional
-            templateType: 'popup'       //Optional
+            closeLabel: 'Cancel',
+            mondayFirst: false,
+            closeOnSelect: true       //Optional
         };
 
         vm.toDatePicker = function(){
             ionicDatePicker.openDatePicker(ipObj2);
         };
+
+        function fetchSales(val){
+            organizationsResource.projection(vm.date.from, vm.date.to).then(function(success){
+                console.log(success);
+                vm.projection = success.projection;
+            });
+        }
+
+
 
 
     });
@@ -849,6 +889,9 @@ angular.module('app.settings')
                 baseApiUrl + '/api/organizations' + subpath, {}, {
                     update: {
                         method: 'PUT'
+                    },
+                    jsonQuery: {
+                        isArray: false
                     }
                 });
         }
@@ -866,6 +909,13 @@ angular.module('app.settings')
             var resource = buildResource('/:_id/requestinvite');
             return resource.save({_id:organizationId},{userId: $rootScope.currentUser._id}).$promise;
         };
+
+         factory.projection = function(fromDate, toDate){
+             console.log('er');
+                         var resource = buildResource('/:_id/projection');
+                         return resource.jsonQuery({_id: $rootScope.activeOrganization},
+                             {from: fromDate, to: toDate}).$promise;
+                     };
 
 
 

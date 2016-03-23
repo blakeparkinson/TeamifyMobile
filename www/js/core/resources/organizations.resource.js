@@ -14,6 +14,9 @@
                 baseApiUrl + '/api/organizations' + subpath, {}, {
                     update: {
                         method: 'PUT'
+                    },
+                    jsonQuery: {
+                        isArray: false
                     }
                 });
         }
@@ -31,6 +34,13 @@
             var resource = buildResource('/:_id/requestinvite');
             return resource.save({_id:organizationId},{userId: $rootScope.currentUser._id}).$promise;
         };
+
+         factory.projection = function(fromDate, toDate){
+             console.log('er');
+                         var resource = buildResource('/:_id/projection');
+                         return resource.jsonQuery({_id: $rootScope.activeOrganization},
+                             {from: fromDate, to: toDate}).$promise;
+                     };
 
 
 

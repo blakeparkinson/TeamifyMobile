@@ -9,4 +9,10 @@ core.filter('initials', function () {
     };
 });
 
+core.filter('moment_dateMedium', function () {
+    return function (input) {
+        return moment(input).format('ddd, MMM Do YYYY');
+    };
+});
+
 //
