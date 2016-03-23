@@ -10,6 +10,7 @@
     "angular-promise-buttons": "^0.1.13",
     "ladda-angular": "^1.0.1",
     "angular-resource": "^1.5.1",
-    "ion-autocomplete": "^0.3.2"
+    "ion-autocomplete": "^0.3.2",
+    "ionic-datepicker": "^1.0.0"
   }
 }

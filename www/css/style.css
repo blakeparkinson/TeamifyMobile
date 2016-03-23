@@ -9728,6 +9728,9 @@ a.button {
 .background-dark {
   background-color: #202E32; }
 
+.disabled-on-dark {
+  color: rgba(255, 255, 255, 0.3); }
+
 .primary-on-dark {
   color: #FFF; }
 

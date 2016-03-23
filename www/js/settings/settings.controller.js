@@ -5,7 +5,9 @@
     var module = angular.module('app.settings');
 
     module.controller('SettingsController', function SettingsController($log, deployChannel, $scope) {
-        console.log('here');
+
+
+
         var deploy = new Ionic.Deploy();
         deploy.setChannel(deployChannel);
 
