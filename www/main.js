@@ -627,6 +627,11 @@ angular.module('app.sales')
             from: moment(),
             to: moment()
         };
+
+
+        //initialize projections with today
+        fetchProjections();
+
         var ipObj1 = {
             callback: function (val) {
                 var m = moment(val);
@@ -641,7 +646,7 @@ angular.module('app.sales')
                     vm.singleDayMode = false;
                 }
                 vm.date.from = moment(val);
-
+                fetchProjections();
 
                // console.log('Return value from the datepicker popup is : ' + val, new Date(val));
             },
@@ -657,6 +662,41 @@ angular.module('app.sales')
         };
 
 
+        vm.editProjection = function(projection){
+
+            $scope.data = {};
+            $scope.data.projection = projection;
+            $scope.data.default = false;
+            // An elaborate, custom popup
+            var myPopup = $ionicPopup.show(
+                {
+                    template: '<div style="margin-bottom:10px"><input type="text" ng-model="data.projection"></div>' +
+                    '<div  style="display:inline-block; margin-left:10px;"> <input ng-model="data.default" type="checkbox" style="width:20px; height:20px; position:relative; top:6px;" id="c"></div> <div style="display:inline-block; margin-left:0px;"><label  for="c">Make default (every ' + vm.date.from.format('dddd') + ')</label> </div>',
+                    title: vm.date.from.format('ddd MMM D'),
+                    subTitle: 'Enter New Projection',
+                    scope: $scope,
+                    buttons: [{text: 'Cancel'},
+                        {
+                            text: '<b>Save</b>',
+                            type: 'button-positive',
+                            onTap: function (e) {
+                                if ($scope.data.projection && !isNaN($scope.data.projection)) {
+                                    vm.projection = $scope.data.projection;
+                                    if($scope.data.default){
+                                       organizationsResource.updateDefaultProjection(vm.date.from.format('d'),$scope.data.projection)
+                                    }
+
+                                        organizationsResource.createCustomProjection($scope.data.projection, vm.date.from);
+                                
+
+                                }
+                            }
+                        }]
+
+        });
+
+        };
+
         var ipObj2 = {
             callback: function (val) {  //Mandatory
 
@@ -666,14 +706,14 @@ angular.module('app.sales')
                     vm.dateOverlap();
                     return;
                 }
-                if(m.isSame(vm.date.to,'day')){
+                if(m.isSame(vm.date.from,'day')){
                     vm.singleDayMode = true;
                 }
                 else{
                     vm.singleDayMode = false;
                 }
                 vm.date.to =  moment(val);
-                fetchSales();
+                fetchProjections();
 
             },
             closeLabel: 'Cancel',
@@ -685,7 +725,7 @@ angular.module('app.sales')
             ionicDatePicker.openDatePicker(ipObj2);
         };
 
-        function fetchSales(val){
+        function fetchProjections(val){
             organizationsResource.projection(vm.date.from, vm.date.to).then(function(success){
                 console.log(success);
                 vm.projection = success.projection;
@@ -891,6 +931,7 @@ angular.module('app.settings')
                         method: 'PUT'
                     },
                     jsonQuery: {
+                        method: 'GET',
                         isArray: false
                     }
                 });
@@ -910,11 +951,30 @@ angular.module('app.settings')
             return resource.save({_id:organizationId},{userId: $rootScope.currentUser._id}).$promise;
         };
 
+        factory.updateDefaultProjection = function(dow, projection){
+            var resource = buildResource('/:_id/defaultprojection/:dow',
+                {});
+            return resource.update({
+                _id: $rootScope.activeOrganization._id,
+                dow: dow
+            },{projection: projection}).$promise;
+        };
+
+        factory.createCustomProjection = function(projection, date){
+
+            var payload = {projection: projection, date: date, labor: {hours: 0, wages:0}, sales:0};
+            var resource = buildResource('/:_id/customprojection',
+                {});
+            return resource.save(
+                {_id: $rootScope.activeOrganization._id},
+                {projection: payload}).$promise;
+        };
+
          factory.projection = function(fromDate, toDate){
-             console.log('er');
+
                          var resource = buildResource('/:_id/projection');
-                         return resource.jsonQuery({_id: $rootScope.activeOrganization},
-                             {from: fromDate, to: toDate}).$promise;
+                         return resource.jsonQuery({_id: $rootScope.activeOrganization._id,
+             from: moment(fromDate).toDate(), to: moment(toDate).toDate()}).$promise;
                      };
 
 
