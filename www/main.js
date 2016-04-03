@@ -533,7 +533,8 @@ angular.module('auth').config(function($stateProvider) {
 
 
 angular.module('app.core')
-    .constant('baseApiUrl', 'http://localhost:7203').constant('deployChannel', 'N/A');
+.
+constant('baseApiUrl', 'http://teamify-development.herokuapp.com').constant('deployChannel', 'dev');
 
 
 /* jshint ignore:end */
