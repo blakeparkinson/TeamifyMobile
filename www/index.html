@@ -4,9 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title></title>
+    <!-- bower:css -->
+    <link rel="stylesheet" href="lib/ladda/dist/ladda.min.css" />
+    <link rel="stylesheet" href="lib/ion-autocomplete/dist/ion-autocomplete.css" />
+    <!-- endbower -->
+
 
     <link href="css/style.min.css" rel="stylesheet">
-      <link href="lib/ion-autocomplete/dist/ion-autocomplete.min.css" rel="stylesheet">
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
 <script src="lib/ionic-platform-web-client/dist/ionic.io.bundle.min.js"></script>
@@ -20,22 +24,28 @@
     <!-- your app's js -->
 
       <!-- Other Libararies -->
-      <script src="lib/satellizer/satellizer.min.js"></script>
-      <script src="lib/angular-promise-buttons/dist/angular-promise-buttons.min.js"></script>
-      <script src="lib/ladda/dist/spin.min.js"></script>
-      <script src="lib/ladda-angular/dist/ladda-angular.min.js"></script>
-      <script src="lib/ladda/dist/ladda.min.js"></script>
-      <script src="lib/angular-resource/angular-resource.min.js"></script>
-      <script src="lib/ion-autocomplete/dist/ion-autocomplete.min.js"></script>
-      <script src="lib/ionic-datepicker/dist/ionic-datepicker.bundle.min.js"></script>
-      <script src="lib/moment/min/moment.min.js"></script>
       <script src="main.js"></script>
+      <!-- bower:js -->
+      <script src="lib/satellizer/satellizer.js"></script>
+      <script src="lib/angular-promise-buttons/dist/angular-promise-buttons.js"></script>
+      <script src="lib/spin.js/spin.js"></script>
+      <script src="lib/ladda/dist/ladda.min.js"></script>
+      <script src="lib/ladda-angular/dist/ladda-angular.js"></script>
+      <script src="lib/angular-resource/angular-resource.js"></script>
+      <script src="lib/ion-autocomplete/dist/ion-autocomplete.js"></script>
+      <script src="lib/ionic/js/ionic.js"></script>
+      <script src="lib/ionic-datepicker/dist/ionic-datepicker.bundle.min.js"></script>
+      <script src="lib/moment/moment.js"></script>
+      <script src="lib/ionic-platform-web-client/dist/ionic.io.bundle.min.js"></script>
+      <!-- endbower -->
+
+
   </head>
   <body ng-app="starter">
 
 
   <div ui-view=""></div>
   <div ui-view="mainContent"></div>
-  
+
   </body>
 </html>
